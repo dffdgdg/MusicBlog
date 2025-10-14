@@ -54,9 +54,23 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
         setContent(content.filter((_, index) => index !== indexToRemove));
     };
 
-    const handleContentChange = (index: number, field: string, value: string | string[]) => {
+const handleContentChange = (index: number, field: string, value: string | string[]) => {
         const newContent = [...content];
-        (newContent[index] as any)[field] = value;
+        const blockToUpdate = { ...newContent[index] }; 
+
+        if ('text' in blockToUpdate && field === 'text' && typeof value === 'string') {
+            blockToUpdate.text = value;
+        } else if ('author' in blockToUpdate && field === 'author' && typeof value === 'string') {
+            blockToUpdate.author = value;
+        } else if ('items' in blockToUpdate && field === 'items' && Array.isArray(value)) {
+            blockToUpdate.items = value;
+        } else if ('videoId' in blockToUpdate && field === 'videoId' && typeof value === 'string') {
+            blockToUpdate.videoId = value;
+        } else if ('caption' in blockToUpdate && field === 'caption' && typeof value === 'string') {
+            blockToUpdate.caption = value;
+        }
+
+        newContent[index] = blockToUpdate; 
         setContent(newContent);
     };
 

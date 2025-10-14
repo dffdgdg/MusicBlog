@@ -78,8 +78,8 @@ export default function Header({ articles }: { articles: Article[] }) {
         </div>
 
         <div className="hidden md:flex space-x-6 text-gray-300 items-center">
-          <a href="/#collections" className="hover:text-white transition-colors">Подборки</a>
-          <a href="/articles" className="hover:text-white transition-colors">Статьи</a>
+          <Link href="/#collections" className="hover:text-white transition-colors">Подборки</Link>
+          <Link href="/articles" className="hover:text-white transition-colors">Статьи</Link>
         </div>
       </nav>
     </header>
