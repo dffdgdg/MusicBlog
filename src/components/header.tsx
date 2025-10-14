@@ -44,7 +44,7 @@ export default function Header({ articles }: { articles: Article[] }) {
   return (
     <header className="fixed top-0 left-0 w-full z-50">
       <nav className="container mx-auto px-6 py-3 flex justify-between items-center bg-black/20 backdrop-blur-lg border-b border-white/10 rounded-b-xl">
-        <Link href="/" className="text-2xl font-bold tracking-tight text-orange-500">Music Craft</Link>
+        <Link href="/" className="text-2xl font-bold tracking-tight text-orange-500">Project title</Link>
         
         <div ref={searchContainerRef} className="relative w-full max-w-md hidden md:block">
           <input 
