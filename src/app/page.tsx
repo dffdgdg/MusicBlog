@@ -1,103 +1,268 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+
+// --- ДАННЫЕ ---
+const topicCollections = [
+  {
+    title: "Первые шаги в Ableton Live",
+    description: "Разбираемся с интерфейсом и создаем первый бит с нуля.",
+    slug: "/collections/first-beat",
+    tags: ["DAW", "Практика"],
+  },
+  {
+    title: "Теория музыки для электронщиков",
+    description:
+      "Только то, что действительно нужно для написания мелодий и гармоний.",
+    slug: "/collections/music-theory",
+    tags: ["Теория", "Гармония"],
+  },
+];
+
+const spotlightArticle = {
+  slug: "mixing-fundamentals",
+  title: "Большой гид по сведению для начинающих",
+  excerpt:
+    "Все ключевые техники в одной статье: от баланса и панорамы до основ эквализации и компрессии.",
+  category: "Сведение",
+};
+
+const popularArticles = [
+  { slug: "songwriting-inspiration", title: "Где искать вдохновение, когда его нет?" },
+  { slug: "vocal-processing-101", title: "5 шагов к чистому вокалу" },
+  { slug: "sound-synthesis-basics", title: "Основы синтеза: из чего состоит звук?" },
+];
+
+const allArticles = [spotlightArticle, ...popularArticles];
+
+// --- ГЛАВНАЯ СТРАНИЦА ---
+export default function HomePage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<typeof allArticles>([]);
+  const [isResultsVisible, setIsResultsVisible] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+
+    if (query.trim().length > 1) {
+      const filtered = allArticles.filter((article) =>
+        article.title.toLowerCase().includes(query.toLowerCase())
+      );
+      setSearchResults(filtered);
+      setIsResultsVisible(true);
+    } else {
+      setIsResultsVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsResultsVisible(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // --- Анимационные пресеты ---
+  const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  const fadeIn = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <>
+      <main className="pt-24 md:pt-32">
+        {/* --- HERO --- */}
+        <section className="relative text-center container mx-auto px-6 py-24 md:py-32">
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.8 }}
+            className="text-6xl md:text-7xl font-extrabold tracking-tighter mb-6 bg-gradient-to-r from-orange-400 via-pink-400 to-yellow-300 text-transparent bg-clip-text"
+          >
+            Учись создавать музыку с нуля
+          </motion.h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="max-w-3xl mx-auto text-lg text-gray-300 mb-10 leading-relaxed"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Практичные статьи, понятные объяснения и реальные примеры —
+            всё, что нужно начинающему продюсеру.
+          </motion.p>
+
+          <motion.a
+            href="#collections"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full text-lg inline-block transform hover:scale-105 transition-transform"
           >
-            Read our docs
-          </a>
-        </div>
+            Начать изучение
+          </motion.a>
+        </section>
+
+        {/* Разделитель */}
+        <motion.div
+          variants={fadeIn}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 1.2 }}
+          className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-20"
+        ></motion.div>
+
+        {/* --- 1. Подборки для старта --- */}
+        <section id="collections" className="container mx-auto px-6 py-16">
+          <motion.h2
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl font-bold mb-10 text-center"
+          >
+            С чего начать?
+          </motion.h2>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {topicCollections.map((path, i) => (
+              <motion.div
+                key={path.slug}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.2, duration: 0.7 }}
+              >
+                <Link
+                  href={path.slug}
+                  className="block p-8 rounded-2xl border transition-all duration-300 bg-white/5 backdrop-blur-md border-orange-500/30 hover:border-orange-500/60 hover:bg-white/10 transform hover:-translate-y-2"
+                >
+                  <h3 className="text-3xl font-bold mb-2">{path.title}</h3>
+                  <p className="text-gray-300 mb-4">{path.description}</p>
+                  <div className="flex justify-between items-center mt-4">
+                    <div className="flex gap-2">
+                      {path.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs bg-gray-700/50 text-gray-300 px-2 py-1 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="font-semibold text-orange-400">
+                      Перейти →
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* --- 3. Свежие статьи --- */}
+        <section className="container mx-auto px-6 py-16">
+          <motion.h2
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl font-bold mb-10 text-center"
+          >
+            Свежие статьи
+          </motion.h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {allArticles.slice(0, 3).map((article, i) => (
+              <motion.div
+                key={article.slug}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.2, duration: 0.6 }}
+              >
+                <Link
+                  href={`/articles/${article.slug}`}
+                  className="block p-6 rounded-2xl border bg-white/5 backdrop-blur-md hover:bg-white/10 hover:-translate-y-2 transition-all"
+                >
+                  <h3 className="text-2xl font-bold mb-3">{article.title}</h3>
+                  <span className="font-semibold text-orange-400">
+                    Читать →
+                  </span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* --- О проекте --- */}
+        <motion.section
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="container mx-auto px-6 py-20 text-center max-w-6xl"
+        >
+          <h2 className="text-4xl font-bold mb-6">О проекте</h2>
+          <p className="text-gray-400 text-lg leading-relaxed">
+            Этот сайт создан для тех, кто только начинает свой путь в музыке.
+            Здесь вы найдете понятные объяснения, реальные примеры и вдохновение —
+            всё, чтобы уверенно двигаться от первых шагов к собственным трекам.
+          </p>
+        </motion.section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+      {/* --- FOOTER --- */}
+      <motion.footer
+        variants={fadeIn}
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 1.2 }}
+        className="text-center py-12 mt-12 border-t border-white/10"
+      >
+        <div className="container mx-auto px-6">
+          <h3 className="text-2xl font-bold mb-3">Присоединяйтесь к сообществу</h3>
+          <p className="text-gray-400 mb-6">
+            Получайте лучшие материалы и новые статьи каждую неделю.
+          </p>
+          <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <input
+              type="email"
+              placeholder="Ваш email"
+              className="w-full bg-gray-900/50 border border-white/20 rounded-full px-5 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-orange-500"
+            />
+            <button
+              type="submit"
+              className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full transition-colors"
+            >
+              Подписаться
+            </button>
+          </form>
+        </div>
+      </motion.footer>
+    </>
   );
 }
