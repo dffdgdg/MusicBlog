@@ -1,7 +1,7 @@
 // Файл: src/app/articles/page.tsx (Серверный компонент)
 
 import { getAllArticles } from '@/lib/data';
-import ArticleList from '@/components/ArticleList'; // Импортируем наш новый клиентский компонент
+import ArticleList from '@/components/ArticleList';
 
 export default async function ArticlesPage() {
     // 1. Получаем данные на сервере

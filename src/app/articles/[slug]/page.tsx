@@ -3,10 +3,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-// Шаг 1: Импортируем наши НОВЫЕ ФУНКЦИИ и типы из data.ts
 import { getArticleBySlug, getAllArticles, type Article } from '@/lib/data';
 
-// Шаг 2: Обновляем generateStaticParams, чтобы он получал slug'и из Firebase
 // Эта функция сообщает Next.js, какие страницы статей существуют
 export async function generateStaticParams() {
     // Получаем все статьи из Firestore
@@ -21,15 +19,12 @@ export async function generateStaticParams() {
 // --- Главный компонент страницы ---
 
 export default async function ArticlePage({ params }: { params: { slug:string } }) {
-    // Шаг 3: Используем новую функцию для получения ОДНОЙ статьи из Firestore
     const article = await getArticleBySlug(params.slug);
 
-    // Если статья по такому slug не найдена, показываем страницу 404
     if (!article) {
         notFound();
     }
 
-    // Вся JSX-разметка ниже остается без изменений, так как структура данных 'article' та же
     return (
         <main className="pt-24 md:pt-32 container mx-auto px-6 py-12">
             <article className="max-w-5xl mx-auto rounded-2xl border p-8 md:p-12 bg-black/20 backdrop-blur-xl shadow-2xl border-white/10">

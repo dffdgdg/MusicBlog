@@ -1,10 +1,10 @@
 // Файл: src/lib/actions.ts
 
-"use server"; // <-- Говорим Next.js, что это серверный код
+"use server"; 
 
 import { revalidatePath } from "next/cache";
 import { adminDb } from "@/lib/firebase-admin"; 
-import type { Article } from "@/lib/data"; // Здесь тоже лучше использовать alias
+import type { Article } from "@/lib/data"; 
 
 export async function createArticleAction(articleData: Article) {
     console.log("Попытка создать статью:", articleData.title);
@@ -39,7 +39,6 @@ export async function updateArticleAction(slug: string, articleData: Article) {
     }
     try {
         const docRef = adminDb.collection('articles').doc(slug);
-        // Используем merge: true, чтобы не затереть поля, которых нет в форме
         await docRef.set(articleData, { merge: true });
         console.log("Статья успешно обновлена!");
         revalidatePath('/articles');
