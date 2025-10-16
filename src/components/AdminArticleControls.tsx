@@ -24,15 +24,20 @@ export default function AdminArticleControls({ slug }: { slug: string })
         }
     };
 
-    return 
-    (
-        <div className="flex gap-3">
-            <Link href={`/admin/edit/${slug}`} className="p-2 text-gray-400 hover:text-cyan-400 transition-colors">
-                <Pencil size={18} />
-            </Link>
-            <button onClick={handleDelete} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                <Trash2 size={18} />
-            </button>
-        </div>
-    );
+return (
+    <div className="flex gap-3">
+        <Link
+            href={`/admin/edit/${slug}`}
+            className="p-2 text-gray-400 hover:text-cyan-400 transition-colors"
+        >
+            <Pencil size={18} />
+        </Link>
+        <button
+            onClick={handleDelete}
+            className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+        >
+            <Trash2 size={18} />
+        </button>
+    </div>
+);
 }
