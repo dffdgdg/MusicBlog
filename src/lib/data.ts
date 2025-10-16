@@ -3,7 +3,6 @@
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
-// Типы остаются без изменений, они описывают структуру наших данных
 export type ContentBlock = 
     | { type: 'heading'; text: string; }
     | { type: 'paragraph'; text: string; }
@@ -22,13 +21,6 @@ export type Article = {
     relatedArticles: { slug: string; title: string; }[];
 };
 
-
-// --- НОВЫЕ ФУНКЦИИ ДЛЯ ПОЛУЧЕНИЯ ДАННЫХ ИЗ FIRESTORE ---
-
-/**
- * Получает ВСЕ статьи из коллекции 'articles' в Firestore.
- * Next.js автоматически кэширует результат этого запроса.
- */
 export async function getAllArticles(): Promise<Article[]> {
     try {
         const articlesCol = collection(db, 'articles');
@@ -41,14 +33,10 @@ export async function getAllArticles(): Promise<Article[]> {
         return articlesList;
     } catch (error) {
         console.error("Ошибка при получении статей из Firestore:", error);
-        return []; // Возвращаем пустой массив в случае ошибки
+        return []; 
     }
 }
 
-/**
- * Получает ОДНУ статью по ее slug из Firestore.
- * @param slug - Уникальный идентификатор статьи.
- */
 export async function getArticleBySlug(slug: string): Promise<Article | undefined> {
     try {
         const docRef = doc(db, 'articles', slug);

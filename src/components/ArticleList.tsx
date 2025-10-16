@@ -12,7 +12,6 @@ import type { Article } from '@/lib/data';
 
 // Компонент теперь принимает массив статей как пропс
 export default function ArticleList({ articles }: { articles: Article[] }) {
-    // Получаем уникальные категории из переданных статей
     const categories = Array.from(new Set(articles.map(a => a.category)));
 
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');

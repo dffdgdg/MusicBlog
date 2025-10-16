@@ -38,8 +38,8 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newTitle = e.target.value;
         setTitle(newTitle);
-        // Генерируем slug только если это новая статья (поле slug пустое)
-        if (!isEditing) {
+        if (!isEditing) 
+        {
             const newSlug = newTitle.toLowerCase().replace(/а/g, 'a').replace(/б/g, 'b').replace(/в/g, 'v').replace(/г/g, 'g').replace(/д/g, 'd').replace(/е/g, 'e').replace(/ё/g, 'e').replace(/ж/g, 'zh').replace(/з/g, 'z').replace(/и/g, 'i').replace(/й/g, 'y').replace(/к/g, 'k').replace(/л/g, 'l').replace(/м/g, 'm').replace(/н/g, 'n').replace(/о/g, 'o').replace(/п/g, 'p').replace(/р/g, 'r').replace(/с/g, 's').replace(/т/g, 't').replace(/у/g, 'u').replace(/ф/g, 'f').replace(/х/g, 'h').replace(/ц/g, 'c').replace(/ч/g, 'ch').replace(/ш/g, 'sh').replace(/щ/g, 'sch').replace(/ъ/g, '').replace(/ы/g, 'y').replace(/ь/g, '').replace(/э/g, 'e').replace(/ю/g, 'yu').replace(/я/g, 'ya').replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
             setSlug(newSlug);
         }
@@ -80,7 +80,8 @@ const handleContentChange = (index: number, field: string, value: string | strin
                 }
                 break;
             case 'list':
-                if (field === 'items' && Array.isArray(value)) {
+                if (field === 'items' && Array.isArray(value)) 
+                {
                     blockToUpdate.items = value;
                 }
                 break;
@@ -104,20 +105,19 @@ const handleContentChange = (index: number, field: string, value: string | strin
             relatedArticles: initialData?.relatedArticles || []
         };
         
-        const result = isEditing
-            ? await updateArticleAction(initialData.slug, articleData) // РЕДАКТИРУЕМ
-            : await createArticleAction(articleData);                  // СОЗДАЕМ
+        const result = isEditing ? await updateArticleAction(initialData.slug, articleData) : await createArticleAction(articleData);
 
-        if (result.success) {
+        if (result.success) 
+        {
             setStatus({ message: result.message, isError: false });
-            router.push('/admin'); // Перенаправляем на дашборд
-            router.refresh();      // Обновляем данные на странице, куда перешли
-        } else {
-            setStatus({ message: result.message, isError: true });
-        }
+            router.push('/admin'); 
+            router.refresh();     
+        } 
+        else { setStatus({ message: result.message, isError: true }); }
     };
 
-    const blockTypes = [
+    const blockTypes = 
+    [
         { type: 'heading', label: 'Заголовок' }, { type: 'paragraph', label: 'Параграф' },
         { type: 'quote', label: 'Цитата' }, { type: 'list', label: 'Список' }, { type: 'youtube', label: 'YouTube' }
     ] as const;

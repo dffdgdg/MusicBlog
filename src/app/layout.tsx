@@ -10,7 +10,7 @@ import { getAllArticles } from "@/lib/data";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Project Title",
+  title: "СоздайМузыку",
   description: "Ваша интерактивная студия знаний о создании музыки",
 };
 

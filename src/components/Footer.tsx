@@ -21,7 +21,7 @@ export default function Footer() {
                     {/* 1. Блок с брендом и соцсетями */}
                     <div className="md:col-span-4">
                         <Link href="/" className="text-2xl font-bold tracking-tight text-orange-500">
-                             Project Title
+                             СоздайМузыку
                         </Link>
                         <p className="mt-4 text-gray-400 max-w-xs">
                             Бесплатная база знаний для начинающих музыкантов. От идеи до готового трека.
@@ -82,7 +82,7 @@ export default function Footer() {
 
                 {/* Нижняя строка с копирайтом */}
                 <div className="mt-16 pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
-                    <p>&copy; {currentYear} Project Title. Все права защищены.</p>
+                    <p>&copy; {currentYear} СоздайМузыку. Все права защищены.</p>
                 </div>
             </div>
         </footer>

@@ -26,7 +26,8 @@ export async function createArticleAction(articleData: Article) {
 
         return { success: true, message: "Статья успешно создана!" };
 
-    } catch (error) {
+    } 
+    catch (error) {
         console.error("Ошибка при создании статьи:", error);
         return { success: false, message: "Произошла ошибка на сервере." };
     }

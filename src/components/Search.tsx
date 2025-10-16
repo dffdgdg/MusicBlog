@@ -40,8 +40,8 @@ export default function Search({ articles, onLinkClick }: { articles: Article[],
     // Функция, которая будет вызвана при клике на результат поиска
     const handleResultClick = () => {
         setIsResultsVisible(false);
-        setSearchQuery(''); // Очищаем поиск
-        onLinkClick?.(); // Вызываем onLinkClick, если он был передан (для закрытия моб. меню)
+        setSearchQuery(''); 
+        onLinkClick?.();
     };
 
     return (

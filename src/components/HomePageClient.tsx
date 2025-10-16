@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import type { Article } from "@/lib/data"; // Импортируем только тип
+import type { Article } from "@/lib/data"; 
 
 const topicCollections = [
     { title: "Первые шаги в Ableton Live", description: "Разбираемся с интерфейсом и создаем первый бит с нуля.", slug: "/collections/first-beat", tags: ["DAW", "Практика"] },
