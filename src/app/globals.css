@@ -30,17 +30,14 @@ body {
 }
 
 @layer components {
-  /* Стили для полей ввода в форме */
   .input-style {
     @apply w-full bg-gray-800/80 border border-white/10 rounded-lg py-2 px-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-shadow;
   }
   
-  /* Основная кнопка (Опубликовать) */
   .btn-primary {
     @apply bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform duration-300 inline-block transform hover:scale-105;
   }
 
-  /* Кнопки для добавления блоков контента */
   .btn-adder {
     @apply flex flex-col items-center justify-center gap-2 p-4 rounded-xl text-sm font-medium transition-all duration-300 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white hover:border-orange-500/50 border border-transparent;
   }
