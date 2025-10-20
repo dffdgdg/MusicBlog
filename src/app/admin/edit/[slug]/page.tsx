@@ -1,4 +1,5 @@
 // Файл: src/app/admin/edit/[slug]/page.tsx
+
 import ArticleForm from '@/components/ArticleForm';
 import { getArticleBySlug } from '@/lib/data';
 import { notFound } from 'next/navigation';

@@ -1,4 +1,4 @@
-// Файл: src/app/page.tsx (Серверный компонент)
+// Файл: src/app/page.tsx
 
 import { getAllArticles } from "@/lib/data";
 import HomePageClient from "@/components/HomePageClient"; 

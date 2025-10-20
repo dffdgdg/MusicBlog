@@ -1,3 +1,4 @@
+/* Файл: src/app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -46,7 +47,9 @@ body {
   .admin-nav-link {
     @apply flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-colors;
   }
-
+.footer-link {
+    @apply text-slate-400 hover:text-white transition-colors duration-300 py-1 block;
+}
   /* Ссылки в футере (новый класс) */
   .footer-link {
     @apply text-gray-400 hover:text-orange-400 transition-colors;

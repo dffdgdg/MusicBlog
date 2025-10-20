@@ -1,11 +1,13 @@
-// src/app/layout.tsx
+// Файл: src/app/layout.tsx
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/Footer";
-import GlobalParallaxBackground from "@/components/GlobalParallaxBackground";
+import ScrollToTop from "@/components/ScrollToTop";
 import { getAllArticles } from "@/lib/data";
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,11 +22,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="ru">
       <body className={`${inter.className} bg-gray-900 text-white`}>
-        <GlobalParallaxBackground />
         <div className="flex flex-col min-h-screen">
-          <Header articles={allArticlesForSearch} />
-          <main className="flex-grow">{children}</main>
-          <Footer />
+<ErrorBoundary>
+    <Header articles={allArticlesForSearch} />
+    <main className="flex-grow">
+        {children}
+    </main>
+    <Footer />
+    <ScrollToTop />
+</ErrorBoundary>
         </div>
       </body>
     </html>
