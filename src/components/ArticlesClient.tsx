@@ -20,7 +20,6 @@ const ArticleCard = React.memo(({ article, index, viewMode }: { article: Article
             y: 0,
             transition: {
                 duration: 0.6,
-                ease: "easeOut",
                 delay: index * 0.1
             }
         }
@@ -182,7 +181,7 @@ const ArticlesList = React.memo(({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
+            transition={{ duration: 0.4 }}
             className={
                 viewMode === 'grid'
                     ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
@@ -197,7 +196,7 @@ const ArticlesList = React.memo(({
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.4, ease: 'easeOut' }}
+                        transition={{ duration: 0.4 }}
                     >
                         <ArticleCard
                             article={article}
@@ -316,7 +315,6 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
             y: 0,
             transition: {
                 duration: 0.8,
-                ease: "easeOut"
             }
         }
     };
@@ -547,7 +545,7 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
                         <motion.div
                             layout
                             className="relative"
-                            transition={{ duration: 0.5, ease: 'easeOut' }}
+                            transition={{ duration: 0.5}}
                         >
                             {filteredArticles.length === 0 ? (
                                 <EmptyState 
