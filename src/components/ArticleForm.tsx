@@ -612,7 +612,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
               <ArticleStats
                 content={formData.content}
                 title={formData.title}
-                excerpt={formData.excerpt}
               />
             </div>
           </div>
