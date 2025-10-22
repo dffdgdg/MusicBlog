@@ -13,35 +13,53 @@ interface MarkdownRendererProps {
     content: string;
 }
 
+// Типы для компонентов без конфликтующих событий
+type MotionComponentProps = Omit<React.HTMLAttributes<HTMLElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart'>;
+
 export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
    const components = {
     // Заголовки
-    h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-        <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-black text-white mt-12 mb-8 first:mt-0 bg-gradient-to-r from-orange-400 to-purple-400 bg-clip-text text-transparent"
-            {...props}
-        />
-    ),
-    h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-        <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl md:text-4xl font-black text-white mt-12 mb-6 bg-gradient-to-r from-cyan-400 to-orange-400 bg-clip-text text-transparent"
-            {...props}
-        />
-    ),
-    h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-        <motion.h3
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-2xl md:text-3xl font-bold text-white mt-10 mb-4 text-cyan-300"
-            {...props}
-        />
-    ),
+    h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => {
+        const { children, ...restProps } = props;
+        return (
+            <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-4xl md:text-5xl font-black text-white mt-12 mb-8 first:mt-0 bg-gradient-to-r from-orange-400 to-purple-400 bg-clip-text text-transparent"
+                {...restProps as MotionComponentProps}
+            >
+                {children}
+            </motion.h1>
+        );
+    },
+    h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => {
+        const { children, ...restProps } = props;
+        return (
+            <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-3xl md:text-4xl font-black text-white mt-12 mb-6 bg-gradient-to-r from-cyan-400 to-orange-400 bg-clip-text text-transparent"
+                {...restProps as MotionComponentProps}
+            >
+                {children}
+            </motion.h2>
+        );
+    },
+    h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => {
+        const { children, ...restProps } = props;
+        return (
+            <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-2xl md:text-3xl font-bold text-white mt-10 mb-4 text-cyan-300"
+                {...restProps as MotionComponentProps}
+            >
+                {children}
+            </motion.h3>
+        );
+    },
 
     // Параграфы
     p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
@@ -49,24 +67,34 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
     ),
 
     // Списки
-    ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
-        <motion.ul
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="space-y-3 my-6"
-            {...props}
-        />
-    ),
-    ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
-        <motion.ol
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="space-y-3 my-6 list-decimal list-inside"
-            {...props}
-        />
-    ),
+    ul: (props: React.HTMLAttributes<HTMLUListElement>) => {
+        const { children, ...restProps } = props;
+        return (
+            <motion.ul
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="space-y-3 my-6"
+                {...restProps as MotionComponentProps}
+            >
+                {children}
+            </motion.ul>
+        );
+    },
+    ol: (props: React.HTMLAttributes<HTMLOListElement>) => {
+        const { children, ...restProps } = props;
+        return (
+            <motion.ol
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="space-y-3 my-6 list-decimal list-inside"
+                {...restProps as MotionComponentProps}
+            >
+                {children}
+            </motion.ol>
+        );
+    },
     li: (props: React.HTMLAttributes<HTMLLIElement>) => (
         <li className="flex items-start gap-3 text-slate-300 leading-relaxed">
             <div className="w-2 h-2 bg-orange-400 rounded-full mt-3 flex-shrink-0" />
@@ -119,15 +147,20 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
     },
 
     // Цитаты
-    blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
-        <motion.blockquote
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="border-l-4 border-orange-500 pl-6 py-4 bg-gradient-to-r from-orange-500/10 to-purple-500/10 rounded-r-2xl my-8"
-            {...props}
-        />
-    ),
+    blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => {
+        const { children, ...restProps } = props;
+        return (
+            <motion.blockquote
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+                className="border-l-4 border-orange-500 pl-6 py-4 bg-gradient-to-r from-orange-500/10 to-purple-500/10 rounded-r-2xl my-8"
+                {...restProps as MotionComponentProps}
+            >
+                {children}
+            </motion.blockquote>
+        );
+    },
 
     // Ссылки
     a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
@@ -153,15 +186,18 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
     ),
 
     // Горизонтальная линия
-    hr: (props: React.HTMLAttributes<HTMLHRElement>) => (
-        <motion.hr
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.5 }}
-            className="my-12 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent border-0"
-            {...props}
-        />
-    ),
+    hr: (props: React.HTMLAttributes<HTMLHRElement>) => {
+        const { ...restProps } = props;
+        return (
+            <motion.hr
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.5 }}
+                className="my-12 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent border-0"
+                {...restProps as MotionComponentProps}
+            />
+        );
+    },
 
     // Изображения
     img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
