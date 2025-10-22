@@ -43,7 +43,7 @@ const VideoEmbed = ({ src, title }: { src: string; title: string }) => {
 export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
     const components = {
         // Заголовки с градиентами и анимациями
-        h1: ({ node, ...props }: any) => (
+        h1: (props: any) => (
             <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -51,7 +51,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 {...props}
             />
         ),
-        h2: ({ node, ...props }: any) => (
+        h2: (props: any) => (
             <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -60,7 +60,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 {...props}
             />
         ),
-        h3: ({ node, ...props }: any) => (
+        h3: (props: any) => (
             <motion.h3
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -71,12 +71,12 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
 
         // Параграфы
-        p: ({ node, ...props }: any) => (
+        p: (props: any) => (
             <p className="text-lg text-slate-300 leading-relaxed mb-6" {...props} />
         ),
 
         // Списки
-        ul: ({ node, ...props }: any) => (
+        ul: (props: any) => (
             <motion.ul
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -85,7 +85,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 {...props}
             />
         ),
-        ol: ({ node, ...props }: any) => (
+        ol: (props: any) => (
             <motion.ol
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -94,7 +94,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 {...props}
             />
         ),
-        li: ({ node, ...props }: any) => (
+        li: (props: any) => (
             <li className="flex items-start gap-3 text-slate-300 leading-relaxed">
                 <div className="w-2 h-2 bg-orange-400 rounded-full mt-3 flex-shrink-0" />
                 <span {...props} />
@@ -102,7 +102,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
 
         // Блоки кода
-        code: ({ node, inline, className, children, ...props }: any) => {
+        code: ({ inline, className, children, ...props }: any) => {
             const match = /language-(\w+)/.exec(className || '');
             const language = match ? match[1] : 'text';
             
@@ -146,7 +146,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         },
 
         // Цитаты
-        blockquote: ({ node, ...props }: any) => (
+        blockquote: (props: any) => (
             <motion.blockquote
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -157,7 +157,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
 
         // Ссылки
-        a: ({ node, ...props }: any) => (
+        a: (props: any) => (
             <a
                 className="text-orange-400 hover:text-orange-300 underline transition-colors"
                 target="_blank"
@@ -167,20 +167,20 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
 
         // Таблицы
-        table: ({ node, ...props }: any) => (
+        table: (props: any) => (
             <div className="overflow-x-auto my-8 rounded-2xl border border-orange-500/20">
                 <table className="min-w-full divide-y divide-orange-500/20" {...props} />
             </div>
         ),
-        th: ({ node, ...props }: any) => (
+        th: (props: any) => (
             <th className="px-4 py-3 bg-orange-500/10 text-orange-400 font-bold text-left" {...props} />
         ),
-        td: ({ node, ...props }: any) => (
+        td: (props: any) => (
             <td className="px-4 py-3 text-slate-300 border-t border-orange-500/10" {...props} />
         ),
 
         // Горизонтальная линия
-        hr: ({ node, ...props }: any) => (
+        hr: (props: any) => (
             <motion.hr
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
@@ -191,7 +191,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
 
         // Изображения
-        img: ({ node, ...props }: any) => (
+        img: (props: any) => (
             <div className="my-8">
                 <div className="relative rounded-2xl overflow-hidden border-2 border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-purple-500/10">
                     {/* В реальном приложении здесь будет Next Image */}
@@ -206,20 +206,13 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 )}
             </div>
         ),
-
-        // Кастомная обработка div с видео
-        div: ({ node, ...props }: any) => {
-            // Проверяем, содержит ли div наш видео-компонент
-            if (props.className?.includes('video-embed')) {
-                const iframe = node.children?.find((child: any) => child.tagName === 'iframe');
-                if (iframe) {
-                    const src = iframe.properties.src;
-                    const title = iframe.properties.title || 'Видео';
-                    return <VideoEmbed src={src} title={title} />;
-                }
-            }
-            return <div {...props} />;
-        },
+        
+        div: (props: any) => {
+    if (props.className?.includes('video-embed')) {
+        return <div {...props} />;
+    }
+    return <div {...props} />;
+},
     };
 
     // Функция для преобразования видео-комментариев в HTML

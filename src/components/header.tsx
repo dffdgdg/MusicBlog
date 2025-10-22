@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import type { Article } from '@/lib/data';
-import { Menu, X, Search as SearchIcon, BookOpen, LayoutGrid, User } from 'lucide-react';
+import { Menu, X, BookOpen, LayoutGrid, User } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import Search from './Search';
