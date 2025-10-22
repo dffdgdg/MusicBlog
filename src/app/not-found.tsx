@@ -14,7 +14,6 @@ export default function NotFoundPage() {
             y: 0,
             transition: {
                 duration: 0.8,
-                ease: "easeOut"
             }
         }
     };
