@@ -1,7 +1,7 @@
 // Файл: src/app/admin/layout.tsx
 
 import Link from 'next/link';
-import { LayoutDashboard, PlusCircle, Settings, Users, BarChart3, LogOut, Home } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, Settings, Users, BarChart3, Home } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (

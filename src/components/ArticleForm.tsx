@@ -28,25 +28,6 @@ const MarkdownPreview = ({ content }: { content: string }) => {
   );
 };
 
-// Компонент тега
-const TagItem = ({ tag, onRemove }: { tag: string; onRemove: () => void }) => (
-  <motion.span
-    initial={{ scale: 0.8, opacity: 0 }}
-    animate={{ scale: 1, opacity: 1 }}
-    exit={{ scale: 0.8, opacity: 0 }}
-    className="inline-flex items-center gap-1 px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm border border-orange-500/30 hover:border-orange-500/50 transition-colors"
-  >
-    {tag}
-    <button
-      type="button"
-      onClick={onRemove}
-      className="hover:text-orange-300 transition-colors text-xs ml-1 flex items-center"
-    >
-      <X size={14} />
-    </button>
-  </motion.span>
-);
-
 // Компонент для встраивания видео
 const VideoEmbedModal = ({ 
   isOpen, 
@@ -189,7 +170,7 @@ const generateEmbedCode = () => {
 };
 
 // Статистика статьи
-const ArticleStats = ({ content, title, excerpt }: { content: string; title: string; excerpt: string }) => {
+const ArticleStats = ({ content, title }: { content: string; title: string }) => {
   const words = content.split(/\s+/).filter(Boolean).length;
   const readingTime = Math.ceil(words / 200) || 1;
   
@@ -412,7 +393,7 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
       } else {
         setStatus({ message: result.message, isError: true });
       }
-    } catch (error) {
+    } catch {
       setStatus({ 
         message: 'Произошла ошибка при сохранении', 
         isError: true 

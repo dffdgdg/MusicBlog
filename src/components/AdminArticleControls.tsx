@@ -28,7 +28,9 @@ export default function AdminArticleControls({ slug }: AdminArticleControlsProps
             } else {
                 alert('Ошибка при удалении: ' + result.message);
             }
-        } catch (error) {
+        } 
+        catch
+        {
             alert('Произошла ошибка при удалении');
         } finally {
             setIsDeleting(false);
