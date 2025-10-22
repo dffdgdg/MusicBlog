@@ -35,7 +35,6 @@ export default function HomePageClient({ latestArticles }: { latestArticles: Art
             y: 0, 
             transition: { 
                 duration: 0.8,
-                ease: "easeOut"
             }
         }
     };
@@ -151,7 +150,6 @@ export default function HomePageClient({ latestArticles }: { latestArticles: Art
                     transition={{
                         duration: 10,
                         repeat: Infinity,
-                        ease: "easeInOut"
                     }}
                 />
                 <motion.div 
@@ -164,7 +162,6 @@ export default function HomePageClient({ latestArticles }: { latestArticles: Art
                     transition={{
                         duration: 8,
                         repeat: Infinity,
-                        ease: "easeInOut",
                         delay: 1
                     }}
                 />
