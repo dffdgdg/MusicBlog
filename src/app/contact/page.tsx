@@ -58,20 +58,20 @@ export default function ContactPage() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut"
+        ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
   };
 
   const staggerChildren = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2
     }
-  };
+  }
+};
 
   if (!isMounted) {
     return (
