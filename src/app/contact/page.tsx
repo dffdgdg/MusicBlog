@@ -1,4 +1,3 @@
-// src/app/contact/page.tsx
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -6,9 +5,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, MessageSquare, User, Send, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
+interface ContactFormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
 export default function ContactPage() {
   const [isMounted, setIsMounted] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
     subject: '',
@@ -17,7 +23,6 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  // Ждем монтирования компонента на клиенте
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -38,7 +43,7 @@ export default function ContactPage() {
       console.log('Form data:', formData);
       setSubmitStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch (error) {
+    } catch {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -68,7 +73,6 @@ export default function ContactPage() {
     }
   };
 
-  // Показываем скелетон пока компонент не смонтирован
   if (!isMounted) {
     return (
       <div className="relative min-h-screen">
