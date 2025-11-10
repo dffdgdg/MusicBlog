@@ -2,19 +2,20 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
   FileText, 
   Plus, 
   BarChart3, 
-  User, 
-  Settings,
+  User,
   LogOut
 } from 'lucide-react';
+import { useAuthStore } from '@/stores/auth-store';
+import type { User as UserType } from '@/types/auth';
 
 interface AuthorSidebarProps {
-  user: any;
+  user: UserType;
 }
 
 const menuItems = [
@@ -26,7 +27,28 @@ const menuItems = [
 ];
 
 export default function AuthorSidebar({ user }: AuthorSidebarProps) {
-    const pathname = usePathname();
+  const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useAuthStore();
+
+  const handleLogout = async () => {
+    try {
+      // Вызываем logout из store
+      logout();
+      
+      // Опционально: очищаем localStorage/cookies если нужно
+      localStorage.removeItem('auth-storage');
+      
+      // Редирект на главную
+      router.push('/');
+      router.refresh(); // Обновляем данные страницы
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Fallback: все равно редиректим
+      router.push('/');
+    }
+  };
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-gray-800 border-r border-orange-500/20">
@@ -39,6 +61,7 @@ export default function AuthorSidebar({ user }: AuthorSidebarProps) {
           <div>
             <h1 className="text-lg font-bold text-white">Панель автора</h1>
             <p className="text-xs text-slate-400">{user.name}</p>
+            <p className="text-xs text-slate-500 capitalize">{user.role}</p>
           </div>
         </Link>
       </div>
@@ -66,7 +89,10 @@ export default function AuthorSidebar({ user }: AuthorSidebarProps) {
       
       {/* Футер */}
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-orange-500/20">
-        <button className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all duration-300"
+        >
           <LogOut className="w-5 h-5" />
           <span className="font-medium">Выйти</span>
         </button>
