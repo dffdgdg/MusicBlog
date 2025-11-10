@@ -1,3 +1,4 @@
+// src/components/shared/ui/ErrorBoundary.tsx
 "use client";
 
 import { Component, ReactNode } from 'react';
@@ -75,3 +76,5 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.children;
     }
 }
+
+export default ErrorBoundary;
