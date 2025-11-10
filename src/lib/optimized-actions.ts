@@ -2,14 +2,14 @@
 
 import { adminDb } from '@/lib/firebase-admin';
 import { revalidatePath } from 'next/cache';
-import type { OptimizedArticle } from './firestore-schemas';
+import type { Article } from '@/features/articles';
 
-export async function createOptimizedArticleAction(articleData: OptimizedArticle) {
+export async function createOptimizedArticleAction(articleData: Article) {
   try {
     const articleWithMetadata = {
       ...articleData,
       searchIndex: {
-        tags: articleData.searchIndex?.tags || [],
+        tags: articleData.tags || [],
         categorySlug: generateSlug(articleData.category),
         levelIndex: getLevelIndex(articleData.level),
         publishedTimestamp: new Date(articleData.publishedDate).getTime(),
@@ -67,5 +67,5 @@ function getLevelIndex(level: string): number {
 
 async function updateCategoryStats(categoryName: string) {
   const categorySlug = generateSlug(categoryName);
-
+  console.log('Updating category stats for:', categoryName);
 }
