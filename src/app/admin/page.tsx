@@ -1,12 +1,10 @@
-// Файл: src/app/admin/page.tsx
-
-import { getAllArticles } from '@/lib/data';
+import { getAllArticlesAction} from '@/lib/actions/articles';
 import Link from 'next/link';
 import { Eye, Edit, Calendar, Clock, Tag, BarChart3, Plus, Users, FileText, ArrowRight } from 'lucide-react';
-import AdminArticleControls from '@/components/AdminArticleControls';
+import AdminArticleControls from '@/components/forms/article-controls';
 
 export default async function AdminDashboardPage() {
-    const articles = await getAllArticles();
+    const articles = await getAllArticlesAction();
 
     // Статистика
     const totalArticles = articles.length;

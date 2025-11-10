@@ -1,5 +1,3 @@
-// Файл: src/app/admin/layout.tsx
-
 import Link from 'next/link';
 import { LayoutDashboard, PlusCircle, Settings, Users, BarChart3, Home } from 'lucide-react';
 

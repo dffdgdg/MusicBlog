@@ -1,5 +1,3 @@
-// Файл: src/lib/firebase-admin.ts
-
 import admin from 'firebase-admin';
 
 if (!admin.apps.length) {
@@ -8,6 +6,10 @@ if (!admin.apps.length) {
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
     };
+
+    if (!serviceAccount.projectId || !serviceAccount.clientEmail || !serviceAccount.privateKey) {
+        throw new Error('Missing Firebase environment variables');
+    }
 
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount)

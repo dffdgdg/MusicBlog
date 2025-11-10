@@ -1,6 +1,4 @@
-// Файл: src/app/admin/add/page.tsx
-
-import ArticleForm from '@/components/ArticleForm';
+import ArticleForm from '@/components/forms/article-form';
 
 export default function AddArticlePage() {
     return (

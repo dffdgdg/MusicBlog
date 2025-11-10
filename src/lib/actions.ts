@@ -1,10 +1,8 @@
-// Файл: src/lib/actions.ts
-
 "use server"; 
 
 import { revalidatePath } from "next/cache";
 import { adminDb } from "@/lib/firebase-admin"; 
-import type { Article } from "@/lib/data"; 
+import type { Article } from '@/features/articles';
 
 export async function createArticleAction(articleData: Article) {
     console.log("Попытка создать статью:", articleData.title);

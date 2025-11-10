@@ -1,12 +1,10 @@
-// Файл: src/app/admin/edit/[slug]/page.tsx
-
-import ArticleForm from '@/components/ArticleForm';
-import { getArticleBySlug } from '@/lib/data';
+import ArticleForm from '@/components/forms/article-form';
+import { getArticleBySlugAction } from '@/lib/actions/articles';
 import { notFound } from 'next/navigation';
 
-export default async function EditArticlePage({ params }: { params: { slug: string } }) {
-    // Получаем данные статьи для редактирования
-    const article = await getArticleBySlug(params.slug);
+export default async function EditArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const article = await getArticleBySlugAction(slug);
 
     if (!article) {
         notFound();
