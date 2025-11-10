@@ -1,6 +1,6 @@
 // ФАЙЛ: src/components/ArticleSkeleton.tsx
 export default function ArticleSkeleton({ viewMode = 'grid' }: { viewMode?: 'grid' | 'list' }) {
-    if (viewMode === 'grid') {
+        if (viewMode === 'grid') {
         return (
             <div className="p-8 rounded-3xl border-2 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border-orange-500/20 animate-pulse">
                 <div className="flex justify-between items-start mb-6">

@@ -5,12 +5,10 @@ import Link from 'next/link';
 import { useState, useMemo, useDeferredValue, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, List, Search, Filter, X, SlidersHorizontal, Clock, Eye } from 'lucide-react';
-import type { Article } from '@/features/articles'; // Импортируем тип Article
+import type { Article } from '@/features/articles'; 
 import { ErrorBoundary } from '@/components/shared/ui/ErrorBoundary';
-import LoadingSpinner from '../../../components/shared/ui/LoadingSpinner';
 import ArticleSkeleton from './article-skeleton';
 
-// Выносим карточку статьи в отдельный компонент для лучшей производительности
 const ArticleCard = React.memo(({ article, index, viewMode }: { article: Article; index: number; viewMode: 'grid' | 'list' }) => {
     const fadeUp = {
         hidden: { opacity: 0, y: 30 },
