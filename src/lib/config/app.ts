@@ -15,5 +15,19 @@ export const APP_CONFIG = {
     title: 100,
     excerpt: 200,
     tags: 10,
+    bio: 500,
+    uploadSize: 5 * 1024 * 1024, // 5MB
+  },
+  
+  routes: {
+    home: '/',
+    articles: '/articles',
+    admin: '/admin',
+    contact: '/contact',
+  },
+  
+  cache: {
+    articles: 3600, 
+    users: 1800, 
   }
 } as const;
