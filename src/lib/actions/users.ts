@@ -13,20 +13,20 @@ export async function getAllUsersAction(): Promise<User[]> {
         
         const articlesSnapshot = await adminDb
           .collection('articles')
-          .where('author.name', '==', userData.name)
+          .where('author.name', '==', userData?.name || '')
           .get();
 
         return {
           id: doc.id,
-          email: userData.email || '',
-          name: userData.name || '',
-          role: userData.role || 'reader',
-          avatar: userData.avatar,
-          createdAt: userData.createdAt || new Date().toISOString(),
-          lastLoginAt: userData.lastLoginAt,
-          isActive: userData.isActive !== false,
+          email: userData?.email || '',
+          name: userData?.name || '',
+          role: userData?.role || 'reader',
+          avatar: userData?.avatar,
+          createdAt: userData?.createdAt || new Date().toISOString(),
+          lastLoginAt: userData?.lastLoginAt,
+          isActive: userData?.isActive !== false,
           articlesCount: articlesSnapshot.size,
-          bio: userData.bio || ''
+          bio: userData?.bio || ''
         } as User;
       })
     );
@@ -74,7 +74,6 @@ export async function updateUserAction(id: string, userData: Partial<UserFormDat
 
 export async function deleteUserAction(id: string): Promise<{ success: boolean; message: string }> {
   try {
-    // Проверяем, есть ли у пользователя статьи
     const user = await getUserByIdAction(id);
     if (user && user.articlesCount && user.articlesCount > 0) {
       return { 
@@ -100,22 +99,23 @@ async function getUserByIdAction(id: string): Promise<User | null> {
     }
 
     const userData = userDoc.data();
+
     const articlesSnapshot = await adminDb
       .collection('articles')
-      .where('author.name', '==', userData.name)
+      .where('author.name', '==', userData?.name || '')
       .get();
 
     return {
       id: userDoc.id,
-      email: userData.email,
-      name: userData.name,
-      role: userData.role,
-      avatar: userData.avatar,
-      createdAt: userData.createdAt,
-      lastLoginAt: userData.lastLoginAt,
-      isActive: userData.isActive !== false,
+      email: userData?.email || '',
+      name: userData?.name || '',
+      role: userData?.role || 'reader',
+      avatar: userData?.avatar,
+      createdAt: userData?.createdAt || new Date().toISOString(),
+      lastLoginAt: userData?.lastLoginAt,
+      isActive: userData?.isActive !== false,
       articlesCount: articlesSnapshot.size,
-      bio: userData.bio
+      bio: userData?.bio || ''
     } as User;
   } catch (error) {
     console.error("Error fetching user:", error);
