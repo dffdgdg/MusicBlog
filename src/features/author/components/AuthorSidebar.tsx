@@ -33,19 +33,16 @@ export default function AuthorSidebar({ user }: AuthorSidebarProps) {
 
   const handleLogout = async () => {
     try {
-      // Вызываем logout из store
       logout();
       
-      // Опционально: очищаем localStorage/cookies если нужно
       localStorage.removeItem('auth-storage');
       
-      // Редирект на главную
       router.push('/');
-      router.refresh(); // Обновляем данные страницы
+      router.refresh(); 
       
-    } catch (error) {
+    } catch (error)
+    {
       console.error('Logout error:', error);
-      // Fallback: все равно редиректим
       router.push('/');
     }
   };

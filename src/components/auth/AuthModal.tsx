@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { X, Mail, Lock, User, LogIn, UserPlus } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import { createPortal } from 'react-dom';
@@ -25,38 +25,38 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const { login } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsLoading(true);
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    // Улучшенное определение роли
-    let role: 'admin' | 'author' | 'reader' = 'reader';
-    
-    if (formData.email.includes('admin') || formData.email === 'admin@demo.ru') {
-      role = 'admin';
-    } else if (formData.email.includes('author') || formData.email === 'author@demo.ru') {
-      role = 'author';
+    try {
+      // Улучшенное определение роли
+      let role: 'admin' | 'author' | 'reader' = 'reader';
+      
+      if (formData.email.includes('admin') || formData.email === 'admin@demo.ru') {
+        role = 'admin';
+      } else if (formData.email.includes('author') || formData.email === 'author@demo.ru') {
+        role = 'author';
+      }
+
+      const mockUser: UserType = {
+        uid: Math.random().toString(36).substr(2, 9), // Используем только uid
+        email: formData.email,
+        name: formData.name || (role === 'admin' ? 'Администратор' : role === 'author' ? 'Автор' : 'Читатель'),
+        role: role,
+        createdAt: new Date().toISOString(),
+        isActive: true,
+        // Убрали дублирующее свойство id
+      };
+
+      login(mockUser);
+      onClose();
+      setFormData({ email: '', password: '', name: '' });
+    } catch (error) {
+      console.error('Auth error:', error);
+    } finally {
+      setIsLoading(false);
     }
-
-    const mockUser: UserType = {
-  uid: Math.random().toString(36).substr(2, 9),
-  email: formData.email,
-  name: formData.name || (role === 'admin' ? 'Администратор' : role === 'author' ? 'Автор' : 'Читатель'),
-  role: role,
-  createdAt: new Date().toISOString(),
-  isActive: true,
-  id: Math.random().toString(36).substr(2, 9) 
-};
-
-    login(mockUser);
-    onClose();
-    setFormData({ email: '', password: '', name: '' });
-  } catch (error) {
-    console.error('Auth error:', error);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   // Используем портал для рендера вне компонента Header
   if (!isOpen) return null;
