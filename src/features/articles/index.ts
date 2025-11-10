@@ -2,8 +2,6 @@ export * from './types';
 export * from './components';
 export * from './hooks';
 
-export type { Article, RelatedArticle } from './types';
-
 export interface RelatedArticle {
     slug: string;
     title: string;

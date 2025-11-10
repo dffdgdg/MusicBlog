@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Plus, Eye, Edit, Calendar, BarChart3 } from 'lucide-react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
-// Создаем тип, соответствующий данным из getAuthorArticles()
 interface AuthorArticle {
   id: string;
   slug: string;
