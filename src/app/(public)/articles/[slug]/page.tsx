@@ -4,10 +4,9 @@ import { ArrowLeft, Clock, User, Share2, BookOpen, Tag, Eye } from 'lucide-react
 import { getArticleBySlugAction, getAllArticlesAction } from '@/lib/actions/articles';
 import MarkdownRenderer from '@/components/shared/ui/MarkdownRenderer';
 import type { Metadata } from 'next';
-import type { Article, RelatedArticle } from '@/features/articles';
+import type { RelatedArticle } from '@/features/articles';
 import { ViewTracker } from '@/components/shared/ui/ViewTracker';
 
-// ИСПРАВЛЕНО: Добавлен await перед params
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlugAction(slug);
@@ -38,18 +37,15 @@ export async function generateStaticParams() {
     }));
 }
 
-// ИСПРАВЛЕНО: Добавлен await перед params и типизация
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     
-    // Получаем статью
     const article = await getArticleBySlugAction(slug);
 
     if (!article) {
         notFound();
     }
 
-    // Защита от отсутствующих данных с правильной типизацией
     const relatedArticles: RelatedArticle[] = article.relatedArticles || [];
     const tags: string[] = article.tags || [];
     const level = article.level || 'Начальный';
@@ -57,7 +53,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
     return (
         <div className="relative min-h-screen">
-            {/* Общий фон как на главной */}
             <div className="fixed inset-0 -z-20 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900/80 to-orange-900/40"></div>
                 <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -65,11 +60,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl animate-pulse"></div>
             </div>
 
-            {/* Трекер просмотров */}
             <ViewTracker slug={slug} />
 
             <div className="container mx-auto px-6 lg:px-12 xl:px-20 py-32">
-                {/* Навигация */}
                 <nav className="mb-12">
                     <Link 
                         href="/articles"
@@ -80,7 +73,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     </Link>
                 </nav>
 
-                {/* Основной контент */}
                 <article className="max-w-4xl mx-auto">
                     {/* Заголовок статьи */}
                     <header className="text-center mb-16">

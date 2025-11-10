@@ -26,13 +26,16 @@ export const handleError = (error: unknown): { message: string; code: string } =
     };
 };
 
-export const withErrorHandling = <T extends any[], R>(
-    fn: (...args: T) => Promise<R>
-) => {
-    return async (...args: T): Promise<R> => {
-        try {
+export const withErrorHandling = <T extends unknown[], R>(fn: (...args: T) => Promise<R>) => 
+    {
+    return async (...args: T): Promise<R> => 
+        {
+        try 
+        {
             return await fn(...args);
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             const handledError = handleError(error);
             throw new AppError(handledError.message, handledError.code);
         }

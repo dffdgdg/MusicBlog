@@ -64,7 +64,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         // Проверяем, есть ли внутри изображения
         const hasImage = React.Children.toArray(children).some(child => 
             React.isValidElement(child) && 
-            (child.type === 'img' || (child.props as any).node?.tagName === 'img')
+            (child.type === 'img' || (child.props as { node?: { tagName?: string } }).node?.tagName === 'img')
         );
 
         // Если есть изображение, рендерим как div

@@ -1,3 +1,5 @@
+import type { Article } from '@/features/articles';
+
 export interface HomeProps {
-    latestArticles: any[];
+    latestArticles: Article[];
 }

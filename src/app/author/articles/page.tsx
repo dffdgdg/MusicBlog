@@ -4,8 +4,21 @@ import Link from 'next/link';
 import { Plus, Eye, Edit, Calendar, BarChart3 } from 'lucide-react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
+// Создаем тип, соответствующий данным из getAuthorArticles()
+interface AuthorArticle {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  status: 'published' | 'draft';
+  publishedDate?: string;
+  views?: number;
+  readingTime?: number;
+}
+
 async function AuthorArticlesContent() {
-  const articles = await getAuthorArticles();
+  const articles = await getAuthorArticles() as AuthorArticle[];
 
   return (
     <div className="space-y-6">
@@ -25,7 +38,7 @@ async function AuthorArticlesContent() {
 
       {articles.length === 0 ? (
         <div className="text-center py-12">
-          <div className="text-6xl mb-4">📝</div>
+          <div className="text-6xl mb-4">??</div>
           <h3 className="text-xl font-bold text-slate-300 mb-2">Статей пока нет</h3>
           <p className="text-slate-400 mb-6">Создайте свою первую статью</p>
           <Link
@@ -38,7 +51,7 @@ async function AuthorArticlesContent() {
         </div>
       ) : (
         <div className="grid gap-4">
-          {articles.map((article: any) => (
+          {articles.map((article: AuthorArticle) => (
             <div
               key={article.id}
               className="bg-white/5 rounded-2xl border border-orange-500/20 p-6 hover:border-orange-500/50 transition-all duration-300"

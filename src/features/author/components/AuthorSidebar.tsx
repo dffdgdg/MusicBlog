@@ -26,7 +26,7 @@ const menuItems = [
 ];
 
 export default function AuthorSidebar({ user }: AuthorSidebarProps) {
-  const pathname = usePathname();
+    const pathname = usePathname();
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-gray-800 border-r border-orange-500/20">

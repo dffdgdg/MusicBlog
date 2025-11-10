@@ -1,18 +1,19 @@
 import { getCurrentUser } from '@/lib/auth';
 import { getArticleBySlugAction } from '@/lib/actions/articles';
+import type { User } from '@/types/auth';
 
-export async function isArticleAuthor(articleSlug: string) {
+export async function isArticleAuthor(articleSlug: string) 
+{
   const user = await getCurrentUser();
   if (!user) return false;
   
-  // Для админов - полный доступ
   if (user.role === 'admin') return true;
   
-  // Для авторов - проверяем владение статьей
   const article = await getArticleBySlugAction(articleSlug);
   return article?.author.name === user.name;
 }
 
-export function canAccessAuthorPanel(user: any) {
-  return user?.role === 'author' || user?.role === 'admin';
+export function canAccessAuthorPanel(user: User | null) 
+{
+    return user?.role === 'author' || user?.role === 'admin';
 }
