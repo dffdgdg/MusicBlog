@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyToken } from '@/lib/auth'; 
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) { // Добавлен async
   // Публичные маршруты
   const publicPaths = [
     '/', '/api', '/articles', '/contact', 
@@ -26,8 +26,14 @@ export function middleware(request: NextRequest) {
   }
 
   try {
-    // Декодируем и проверяем токен
-    const decoded = verifyToken(token);
+    // Декодируем и проверяем токен - исправлено: добавлен await
+    const decoded = await verifyToken(token); // Добавлен await
+    
+    if (!decoded) {
+      // Невалидный токен
+      return NextResponse.redirect(new URL('/auth', request.url));
+    }
+    
     const userRole = decoded.role;
     
     // Проверка прав для админ-панели
