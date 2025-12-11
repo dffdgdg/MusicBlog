@@ -1,5 +1,3 @@
-// Файл: src/components/AdminArticleControls.tsx
-
 "use client";
 
 import { useState } from 'react';

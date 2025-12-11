@@ -173,7 +173,6 @@ const ArticleCard = React.memo(({ article, index, viewMode }: { article: Article
 
 ArticleCard.displayName = 'ArticleCard';
 
-// Компонент для отображения списка статей с оптимизацией
 const ArticlesList = React.memo(({ 
     articles, 
     viewMode 
@@ -219,7 +218,6 @@ const ArticlesList = React.memo(({
 
 ArticlesList.displayName = 'ArticlesList';
 
-// Компонент для пустого состояния
 const EmptyState = React.memo(({ 
     searchQuery, 
     selectedCategories, 
@@ -263,7 +261,6 @@ const EmptyState = React.memo(({
 
 EmptyState.displayName = 'EmptyState';
 
-// Основной компонент
 export default function ArticlesClient({ articles }: { articles: Article[] }) {
     const categories = useMemo(() => 
         Array.from(new Set(articles.map(a => a.category))), 
@@ -275,10 +272,8 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [showFilters, setShowFilters] = useState(false);
     
-    // Используем useDeferredValue для плавного поиска
     const deferredSearchQuery = useDeferredValue(searchQuery);
 
-    // Оптимизированная фильтрация с useMemo
     const filteredArticles = useMemo(() => {
         return articles.filter(article => {
             const title = article.title?.toLowerCase() ?? '';
@@ -301,7 +296,6 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
         });
     }, [articles, deferredSearchQuery, selectedCategories]);
 
-    // Оптимизированные обработчики
     const toggleCategory = useMemo(() => (category: string) => {
         setSelectedCategories(prev => 
             prev.includes(category) 

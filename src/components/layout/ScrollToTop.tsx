@@ -6,16 +6,13 @@ import { useState, useEffect } from "react";
 export default function ScrollToTop() {
     const [showScrollTop, setShowScrollTop] = useState(false);
 
-    // Отслеживаем скролл для кнопки "Наверх"
     useEffect(() => {
         const handleScroll = () => {
-            // Показываем кнопку когда прокрутили больше 300px
             setShowScrollTop(window.scrollY > 300);
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
         
-        // Проверяем начальную позицию
         handleScroll();
 
         return () => window.removeEventListener('scroll', handleScroll);

@@ -13,7 +13,6 @@ export const getCachedArticles = unstable_cache(
   ['articles'],
   { revalidate: 3600 }
 );
-// Функция для получения статьи по slug
 export async function getArticleBySlugAction(slug: string): Promise<Article | undefined> {
     try {
         const docRef = adminDb.collection('articles').doc(slug);
@@ -31,36 +30,55 @@ export async function getArticleBySlugAction(slug: string): Promise<Article | un
     }
 }
 
-// Функция для получения всех статей
 export async function getAllArticlesAction(): Promise<Article[]> {
-    try {
-        const articlesSnapshot = await adminDb.collection('articles').get();
-        
-        if (articlesSnapshot.empty) {
-            console.log("No articles found in Firestore");
-            return [];
-        }
-
-        const articlesList = articlesSnapshot.docs.map(doc => {
-            const data = doc.data();
-            if (!data.slug || !data.title) {
-                console.warn(`Invalid article structure for doc: ${doc.id}`);
-                return null;
-            }
-            return data as Article;
-        }).filter(Boolean) as Article[];
-
-        return articlesList;
-    } catch (error) {
-        console.error("Critical error fetching articles:", error);
-        return [];
+  try {
+    console.log('?? Fetching articles from Firestore...');
+    
+    const articlesSnapshot = await adminDb.collection('articles').get();
+    
+    console.log(`?? Found ${articlesSnapshot.size} documents in 'articles' collection`);
+    
+    if (articlesSnapshot.empty) {
+      console.log('?? No articles found in Firestore');
+      return [];
     }
+
+    const firstDoc = articlesSnapshot.docs[0];
+    const firstData = firstDoc.data();
+    console.log('?? Sample document structure:', {
+      id: firstDoc.id,
+      title: firstData.title,
+      category: firstData.category,
+      slug: firstData.slug,
+      contentLength: firstData.content?.length || 0
+    });
+
+    const articlesList = articlesSnapshot.docs.map(doc => {
+      const data = doc.data();
+      console.log(`?? Processing article: ${data.title} (${doc.id})`);
+      
+      if (!data.slug || !data.title) {
+        console.warn(`? Invalid article structure for doc: ${doc.id}`, {
+          hasSlug: !!data.slug,
+          hasTitle: !!data.title
+        });
+        return null;
+      }
+      
+      return data as Article;
+    }).filter(Boolean) as Article[];
+
+    console.log(`? Successfully processed ${articlesList.length} articles`);
+    return articlesList;
+    
+  } catch (error) {
+    console.error('? Critical error fetching articles:', error);
+    return [];
+  }
 }
 
-// Функция для увеличения счетчика просмотров (без куков)
 export async function incrementArticleViews(slug: string) {
     try {
-        // Увеличиваем общее количество просмотров
         const articleRef = adminDb.collection('articles').doc(slug);
         const articleDoc = await articleRef.get();
         
@@ -81,7 +99,6 @@ export async function incrementArticleViews(slug: string) {
     }
 }
 
-// Функция для получения популярных статей
 export async function getPopularArticlesAction(limit: number = 5): Promise<Article[]> {
     try {
         const articlesSnapshot = await adminDb

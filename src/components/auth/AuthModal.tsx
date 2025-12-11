@@ -1,11 +1,11 @@
-// src/components/auth/AuthModal.tsx
 "use client";
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Mail, Lock, User, LogIn, UserPlus } from 'lucide-react';
+import { X, Mail, Lock, User, LogIn, UserPlus, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import { createPortal } from 'react-dom';
+import { registerUserAction, loginUserAction } from '@/lib/actions/auth';
 import type { User as UserType } from '@/types/auth';
 
 interface AuthModalProps {
@@ -21,44 +21,54 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     name: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   
   const { login } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
 
     try {
-      // Улучшенное определение роли
-      let role: 'admin' | 'author' | 'reader' = 'reader';
+      let result;
       
-      if (formData.email.includes('admin') || formData.email === 'admin@demo.ru') {
-        role = 'admin';
-      } else if (formData.email.includes('author') || formData.email === 'author@demo.ru') {
-        role = 'author';
+      if (isLogin) {
+        result = await loginUserAction(formData.email, formData.password);
+      } else {
+        let role: 'reader' | 'author' | 'admin' = 'reader';
+        if (formData.email.includes('admin')) {
+          role = 'admin';
+        } else if (formData.email.includes('author')) {
+          role = 'author';
+        }
+
+        result = await registerUserAction({
+          email: formData.email,
+          name: formData.name,
+          password: formData.password,
+          role
+        });
       }
 
-      const mockUser: UserType = {
-        uid: Math.random().toString(36).substr(2, 9), // Используем только uid
-        email: formData.email,
-        name: formData.name || (role === 'admin' ? 'Администратор' : role === 'author' ? 'Автор' : 'Читатель'),
-        role: role,
-        createdAt: new Date().toISOString(),
-        isActive: true,
-        // Убрали дублирующее свойство id
-      };
-
-      login(mockUser);
-      onClose();
-      setFormData({ email: '', password: '', name: '' });
+      if (result.success && result.user) {
+        const user = result.user as UserType;
+        login(user);
+        onClose();
+        setFormData({ email: '', password: '', name: '' });
+        
+        window.location.reload();
+      } else {
+        setError(result.message || 'Произошла ошибка');
+      }
     } catch (error) {
+      setError('Произошла непредвиденная ошибка');
       console.error('Auth error:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Используем портал для рендера вне компонента Header
   if (!isOpen) return null;
 
   return createPortal(
@@ -84,6 +94,14 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         {/* Форма */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Сообщение об ошибке */}
+          {error && (
+            <div className="flex items-center gap-3 p-3 bg-red-500/20 border border-red-500/30 rounded-xl text-red-400">
+              <AlertCircle size={16} />
+              <span className="text-sm">{error}</span>
+            </div>
+          )}
+
           {!isLogin && (
             <div className="group">
               <label className="block text-sm font-semibold text-white mb-2 flex items-center gap-2">
@@ -128,6 +146,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
               className="w-full px-4 py-3 bg-white/5 border-2 border-orange-500/20 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:border-orange-500/50 transition-all duration-300"
               placeholder="••••••••"
               required
+              minLength={6}
             />
           </div>
 
@@ -151,7 +170,10 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
         <div className="mt-6 text-center">
           <button
             type="button"
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setError('');
+            }}
             className="text-orange-400 hover:text-orange-300 transition-colors text-sm"
           >
             {isLogin 
@@ -163,7 +185,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         {/* Демо-аккаунты */}
         <div className="mt-6 p-4 bg-white/5 rounded-2xl border border-orange-500/20">
-          <p className="text-slate-400 text-sm mb-2">Демо-аккаунты:</p>
+          <p className="text-slate-400 text-sm mb-2">Демо-аккаунты (пароль: любой):</p>
           <div className="space-y-1 text-xs text-slate-300">
             <div>admin@demo.ru (Админ)</div>
             <div>author@demo.ru (Автор)</div>

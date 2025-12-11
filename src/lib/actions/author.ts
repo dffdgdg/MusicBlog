@@ -4,7 +4,6 @@
 import { adminDb } from '@/lib/firebase-admin';
 import { getCurrentUser } from '@/lib/auth';
 
-// Вспомогательная функция для проверки прав автора/админа
 async function checkAuthorAccess() {
   const user = await getCurrentUser();
   if (!user || (user.role !== 'author' && user.role !== 'admin')) {
@@ -15,7 +14,7 @@ async function checkAuthorAccess() {
 
 export async function getAuthorStats() {
   try {
-    const user = await checkAuthorAccess(); // Используем новую функцию
+    const user = await checkAuthorAccess();
 
     const articlesSnapshot = await adminDb
       .collection('articles')
@@ -54,9 +53,8 @@ export async function getAuthorStats() {
 
 export async function getAuthorArticles() {
   try {
-    const user = await checkAuthorAccess(); // Используем новую функцию
+    const user = await checkAuthorAccess();
 
-    // Для админов показываем все статьи, для авторов - только свои
     let articlesQuery;
     if (user.role === 'admin') {
       articlesQuery = adminDb

@@ -1,5 +1,3 @@
-// Файл: src/components/AdminArticleControls.tsx
-
 "use client";
 import { NavigationService } from '@/lib/navigation';
 import { useState } from 'react';

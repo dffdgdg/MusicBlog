@@ -61,13 +61,11 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
     // Параграфы - ИСПРАВЛЕННЫЙ КОМПОНЕНТ
     p: ({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => {
-        // Проверяем, есть ли внутри изображения
         const hasImage = React.Children.toArray(children).some(child => 
             React.isValidElement(child) && 
             (child.type === 'img' || (child.props as { node?: { tagName?: string } }).node?.tagName === 'img')
         );
 
-        // Если есть изображение, рендерим как div
         if (hasImage) {
             return (
                 <div className="text-lg text-slate-300 leading-relaxed mb-6" {...props}>
@@ -76,7 +74,6 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
             );
         }
 
-        // Обычный параграф
         return (
             <p className="text-lg text-slate-300 leading-relaxed mb-6" {...props}>
                 {children}
@@ -120,7 +117,6 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         </li>
     ),
 
-    // Блоки кода
     code: ({ inline, className, children, ...props }: React.HTMLAttributes<HTMLElement> & { inline?: boolean; className?: string }) => {
         const match = /language-(\w+)/.exec(className || '');
         const language = match ? match[1] : 'text';
@@ -164,7 +160,6 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         );
     },
 
-    // Цитаты
     blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => {
         const { children, ...restProps } = props;
         return (
@@ -180,7 +175,6 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         );
     },
 
-    // Ссылки
     a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
         <a
             className="text-orange-400 hover:text-orange-300 underline transition-colors"
@@ -190,7 +184,6 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         />
     ),
 
-    // Таблицы
     table: (props: React.HTMLAttributes<HTMLTableElement>) => (
         <div className="overflow-x-auto my-8 rounded-2xl border border-orange-500/20">
             <table className="min-w-full divide-y divide-orange-500/20" {...props} />
@@ -203,7 +196,6 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         <td className="px-4 py-3 text-slate-300 border-t border-orange-500/10" {...props} />
     ),
 
-    // Горизонтальная линия
     hr: (props: React.HTMLAttributes<HTMLHRElement>) => {
         const { ...restProps } = props;
         return (
@@ -217,7 +209,6 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         );
     },
 
-    // Изображения - ИСПРАВЛЕННЫЙ КОМПОНЕНТ
     img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
         <div className="my-8">
             <div className="relative rounded-2xl overflow-hidden border-2 border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-purple-500/10">
@@ -234,7 +225,6 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
     ),
 };
 
-    // Функция для преобразования видео-комментариев в HTML
     const processVideoComments = (text: string): string => {
         return text.replace(
             /<!-- VIDEO:(https?:\/\/[^:]+):([^>]*) -->/g,

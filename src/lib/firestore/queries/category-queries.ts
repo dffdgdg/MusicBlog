@@ -1,7 +1,6 @@
 import { adminDb } from '@/lib/firebase-admin';
 
 export class OptimizedCategoryQueries {
-  // Получение категорий со статистикой
   static async getCategoriesWithStats() {
     const snapshot = await adminDb
       .collection('categories')
@@ -11,7 +10,6 @@ export class OptimizedCategoryQueries {
     return snapshot.docs.map(doc => doc.data());
   }
 
-  // Обновление статистики категории
   static async updateCategoryStats(categorySlug: string) {
     const articlesSnapshot = await adminDb
       .collection('articles')

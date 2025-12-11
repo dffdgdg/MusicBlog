@@ -1,5 +1,5 @@
 "use client";
-import { NavigationService } from '@/lib/navigation';
+
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Article } from '@/features/articles';
@@ -7,8 +7,7 @@ import { createArticleAction, updateArticleAction } from '@/lib/actions';
 import { Eye, Code, Save, Clock, Tag, User, BookOpen, Plus, X, AlertCircle, CheckCircle2, Video, Youtube } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MarkdownRenderer from '@/components/shared/ui/MarkdownRenderer';
-import { useRouteContext } from '@/lib/hooks/useRouteContext';
-// Конфигурация
+
 const CATEGORIES = [
   'Сведение', 'Мастеринг', 'Синтез', 'Саунд-дизайн', 
   'Теория музыки', 'Ableton Live', 'FL Studio', 'Логика',
@@ -31,7 +30,6 @@ const getRedirectPath = () => {
   return '/articles';
 };
 
-// Компонент предпросмотра Markdown
 const MarkdownPreview = ({ content }: { content: string }) => {
   return (
     <div className="markdown-preview">
@@ -40,7 +38,6 @@ const MarkdownPreview = ({ content }: { content: string }) => {
   );
 };
 
-// Компонент для встраивания видео
 const VideoEmbedModal = ({ 
   isOpen, 
   onClose, 
@@ -181,7 +178,6 @@ const generateEmbedCode = () => {
   );
 };
 
-// Статистика статьи
 const ArticleStats = ({ content, title }: { content: string; title: string }) => {
   const words = content.split(/\s+/).filter(Boolean).length;
   const readingTime = Math.ceil(words / 200) || 1;
@@ -214,7 +210,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Состояния формы
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
     slug: initialData?.slug || '',
@@ -233,7 +228,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
 
   const isEditing = !!initialData;
 
-  // Генерация slug
   const generateSlug = (text: string) => {
     return text
       .toLowerCase()
@@ -254,7 +248,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
   };
-  // Автогенерация slug при изменении заголовка
   useEffect(() => {
     if (!isEditing && formData.title && !formData.slug) {
       const newSlug = generateSlug(formData.title);
@@ -262,7 +255,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     }
   }, [formData.title, isEditing, formData.slug]);
 
-  // Управление тегами
   const addTag = () => {
     const trimmedTag = newTag.trim();
     
@@ -297,7 +289,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     }
   };
 
-  // Вставка Markdown
   const insertMarkdown = (syntax: string, wrapSelection = true) => {
     if (!textareaRef.current) return;
 
@@ -324,12 +315,10 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     }, 0);
   };
 
-  // Вставка видео
   const insertVideo = (embedCode: string) => {
     insertMarkdown(`\n\n${embedCode}\n\n`, false);
   };
 
-  // Кнопки форматирования
   const formatButtons = [
     { label: 'H1', syntax: '# ', wrap: false },
     { label: 'H2', syntax: '## ', wrap: false },
@@ -342,7 +331,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     { label: 'Цитата', syntax: '> ', wrap: false },
   ];
 
-  // Валидация формы
   const validateForm = () => {
     if (!formData.title.trim()) {
       return 'Заголовок обязателен';
@@ -362,7 +350,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     return null;
   };
 
-  // Отправка формы
   const handleSubmit = async (e: React.FormEvent) => {
     
     e.preventDefault();

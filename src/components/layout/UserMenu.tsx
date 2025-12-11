@@ -1,4 +1,3 @@
-// src/components/layout/UserMenu.tsx
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
@@ -6,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, LogOut, FileText, Shield, User as UserIcon } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import { AuthModal } from '@/components/auth/AuthModal';
+import { logoutUserAction } from '@/lib/actions/auth'; 
 
 export function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,9 +13,8 @@ export function UserMenu() {
   const [isMounted, setIsMounted] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   
-  const { user, isAuthenticated, logout, hasPermission } = useAuthStore();
+  const { user, isAuthenticated, logout } = useAuthStore();
 
-  // Проверяем что компонент монтирован на клиенте
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -31,12 +30,19 @@ export function UserMenu() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    setIsOpen(false);
+  const handleLogout = async () => {
+    try {
+      await logoutUserAction();
+      
+      logout();
+      setIsOpen(false);
+      
+      window.location.reload();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
-  // Показываем скелетон пока не монтирован на клиенте
   if (!isMounted) {
     return (
       <div className="flex items-center gap-2 p-2">
@@ -118,7 +124,7 @@ export function UserMenu() {
             {/* Навигация */}
             <div className="p-2 space-y-1">
               {/* Панель автора */}
-              {hasPermission('author') && (
+              {user?.role === 'author' && (
                 <a
                   href="/author"
                   className="flex items-center gap-3 w-full px-3 py-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
@@ -129,7 +135,7 @@ export function UserMenu() {
               )}
 
               {/* Панель администратора */}
-              {hasPermission('admin') && (
+              {user?.role === 'admin' && (
                 <a
                   href="/admin"
                   className="flex items-center gap-3 w-full px-3 py-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
@@ -139,11 +145,14 @@ export function UserMenu() {
                 </a>
               )}
 
-              {/* Общие настройки */}
-              <button className="flex items-center gap-3 w-full px-3 py-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200">
-                <Settings size={16} />
-                Настройки
-              </button>
+              {/* Профиль */}
+              <a
+                href="/profile"
+                className="flex items-center gap-3 w-full px-3 py-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+              >
+                <User size={16} />
+                Профиль
+              </a>
 
               {/* Разделитель */}
               <div className="border-t border-orange-500/20 my-1" />

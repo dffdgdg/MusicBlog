@@ -7,7 +7,6 @@ import { createArticleAction, updateArticleAction } from '@/lib/actions';
 import { Eye, Code, Save, Clock, Tag, User, BookOpen, Plus, X, AlertCircle, CheckCircle2, Video, Youtube } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MarkdownRenderer from '@/components/shared/ui/MarkdownRenderer';
-// Конфигурация
 const CATEGORIES = [
   'Сведение', 'Мастеринг', 'Синтез', 'Саунд-дизайн', 
   'Теория музыки', 'Ableton Live', 'FL Studio', 'Логика',
@@ -19,7 +18,6 @@ const MAX_TAGS = 10;
 const MAX_TITLE_LENGTH = 100;
 const MAX_EXCERPT_LENGTH = 200;
 
-// Компонент предпросмотра Markdown
 const MarkdownPreview = ({ content }: { content: string }) => {
   return (
     <div className="markdown-preview">
@@ -28,12 +26,7 @@ const MarkdownPreview = ({ content }: { content: string }) => {
   );
 };
 
-// Компонент для встраивания видео
-const VideoEmbedModal = ({ 
-  isOpen, 
-  onClose, 
-  onInsert 
-}: { 
+const VideoEmbedModal = ({ isOpen, onClose, onInsert }: { 
   isOpen: boolean; 
   onClose: () => void; 
   onInsert: (embedCode: string) => void;
@@ -57,7 +50,7 @@ const generateEmbedCode = () => {
     else if (platform === 'rutube') 
       {
         const match = videoUrl.match(/rutube\.ru\/video\/([a-f0-9]+)/);
-        if (match) {
+        if (match) { 
             const videoId = match[1];
             embedUrl = `https://rutube.ru/play/embed/${videoId}`;
         }
@@ -169,7 +162,6 @@ const generateEmbedCode = () => {
   );
 };
 
-// Статистика статьи
 const ArticleStats = ({ content, title }: { content: string; title: string }) => {
   const words = content.split(/\s+/).filter(Boolean).length;
   const readingTime = Math.ceil(words / 200) || 1;
@@ -202,7 +194,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Состояния формы
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
     slug: initialData?.slug || '',
@@ -221,7 +212,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
 
   const isEditing = !!initialData;
 
-  // Генерация slug
   const generateSlug = (text: string) => {
     return text
       .toLowerCase()
@@ -242,7 +232,7 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
   };
-  // Автогенерация slug при изменении заголовка
+
   useEffect(() => {
     if (!isEditing && formData.title && !formData.slug) {
       const newSlug = generateSlug(formData.title);
@@ -250,7 +240,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     }
   }, [formData.title, isEditing, formData.slug]);
 
-  // Управление тегами
   const addTag = () => {
     const trimmedTag = newTag.trim();
     
@@ -285,7 +274,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     }
   };
 
-  // Вставка Markdown
   const insertMarkdown = (syntax: string, wrapSelection = true) => {
     if (!textareaRef.current) return;
 
@@ -312,12 +300,10 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     }, 0);
   };
 
-  // Вставка видео
   const insertVideo = (embedCode: string) => {
     insertMarkdown(`\n\n${embedCode}\n\n`, false);
   };
 
-  // Кнопки форматирования
   const formatButtons = [
     { label: 'H1', syntax: '# ', wrap: false },
     { label: 'H2', syntax: '## ', wrap: false },
@@ -330,7 +316,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     { label: 'Цитата', syntax: '> ', wrap: false },
   ];
 
-  // Валидация формы
   const validateForm = () => {
     if (!formData.title.trim()) {
       return 'Заголовок обязателен';
@@ -350,7 +335,6 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     return null;
   };
 
-  // Отправка формы
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     

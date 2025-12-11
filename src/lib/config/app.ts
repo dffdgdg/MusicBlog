@@ -16,7 +16,7 @@ export const APP_CONFIG = {
     excerpt: 200,
     tags: 10,
     bio: 500,
-    uploadSize: 5 * 1024 * 1024, // 5MB
+    uploadSize: 5 * 1024 * 1024,
   },
   
   routes: {

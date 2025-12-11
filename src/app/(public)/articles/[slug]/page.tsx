@@ -6,6 +6,7 @@ import MarkdownRenderer from '@/components/shared/ui/MarkdownRenderer';
 import type { Metadata } from 'next';
 import type { RelatedArticle } from '@/features/articles';
 import { ViewTracker } from '@/components/shared/ui/ViewTracker';
+import { CommentsSection } from '@/components/comments/CommentSection';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -184,6 +185,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                             </Link>
                         </div>
                     </div>
+                    
+                    <CommentsSection articleSlug={slug} />
+
 
                     {/* Рекомендуемые статьи - показываем только если есть данные */}
                     {relatedArticles.length > 0 && (

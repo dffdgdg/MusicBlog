@@ -25,10 +25,7 @@ export function useArticles() {
     }
   };
 
-  // Для клиентских операций можно оставить эти функции,
-  // но они будут работать только с локальным состоянием
   const createArticle = async (articleData: Omit<Article, 'id'>) => {
-    // В реальном приложении здесь будет вызов API
     const newArticle = {
       ...articleData,
       id: Date.now().toString(),

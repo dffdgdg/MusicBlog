@@ -1,4 +1,5 @@
-export interface CategoryWithStats {
+export interface CategoryWithStats 
+{
   id: string;
   name: string;
   slug: string;

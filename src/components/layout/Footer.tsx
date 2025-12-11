@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { Youtube, Send, Mail, Music, Headphones, Mic2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
-export default function Footer() {
+export default function Footer() 
+{
     const [currentYear, setCurrentYear] = useState('');
 
     useEffect(() => {
@@ -41,7 +42,7 @@ export default function Footer() {
                                 href="#" 
                                 aria-label="Telegram" 
                                 className="p-3 bg-white/5 hover:bg-blue-500/20 border border-blue-500/20 rounded-2xl text-slate-400 hover:text-blue-400 transition-all duration-300 hover:scale-110"
-                            >
+                                >
                                 <Send size={20} />
                             </a>
                             <a 

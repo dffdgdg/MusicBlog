@@ -1,4 +1,3 @@
-// src/components/auth/ProtectedRoute.tsx - ОБНОВИТЬ
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -28,7 +27,6 @@ export function ProtectedRoute({
     }
   }, [isAuthenticated, isLoading]);
 
-  // Пока загружается или проверяется доступ, показываем загрузку
   if (isLoading || !accessChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -61,7 +59,6 @@ export function ProtectedRoute({
     );
   }
 
-  // ОБНОВЛЕННАЯ ПРОВЕРКА ПРАВ - админы имеют доступ к авторским функциям
   const hasAccess = requiredRole === 'author' 
     ? hasPermission('author') || user?.role === 'admin'
     : hasPermission(requiredRole);

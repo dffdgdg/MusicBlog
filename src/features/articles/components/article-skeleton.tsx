@@ -1,4 +1,3 @@
-// ФАЙЛ: src/components/ArticleSkeleton.tsx
 export default function ArticleSkeleton({ viewMode = 'grid' }: { viewMode?: 'grid' | 'list' }) {
         if (viewMode === 'grid') {
         return (

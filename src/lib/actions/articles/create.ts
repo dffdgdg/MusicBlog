@@ -1,7 +1,6 @@
 "use server";
 
 import { adminDb } from '@/lib/firebase-admin';
-import { ArticleQueries } from '@/lib/firestore/queries/article-queries';
 import { revalidatePath } from 'next/cache';
 import { getCurrentUser } from '@/lib/auth';
 import type { Article } from '@/features/articles';
@@ -10,19 +9,16 @@ export async function createArticleAction(articleData: Article) {
     console.log("Попытка создать статью:", articleData.title);
 
     try {
-        // Получаем текущего пользователя для проверки прав
         const currentUser = await getCurrentUser();
         
         if (!currentUser) {
             return { success: false, message: "Требуется авторизация" };
         }
 
-        // Проверяем, что автор соответствует текущему пользователю
         if (articleData.author.name !== currentUser.name && currentUser.role !== 'admin') {
             return { success: false, message: "Недостаточно прав для создания статьи от этого автора" };
         }
 
-        // Добавляем метаданные автора
         const articleWithMetadata = {
             ...articleData,
             _author: {
