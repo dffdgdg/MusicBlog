@@ -1,3 +1,5 @@
+// src/types/comments.ts
+
 export interface BlogComment {
   id: string;
   articleSlug: string;
@@ -16,6 +18,8 @@ export interface BlogComment {
   replies?: BlogComment[];
   status: 'approved' | 'pending' | 'spam';
 }
+
+export type Comment = BlogComment;
 
 export interface CommentFormData {
   content: string;
