@@ -69,11 +69,11 @@ export async function createCommentAction(articleSlug: string, formData: Comment
     const cleanedComment = removeUndefinedFields(comment);
     await adminDb.collection('comments').doc(commentId).set(cleanedComment);
 
-    function removeUndefinedFields<T extends Record<string, unknown>>(obj: T): T {
+    function removeUndefinedFields<T extends object>(obj: T): T {
       const cleaned = { ...obj };
       Object.keys(cleaned).forEach(key => {
-        if (cleaned[key] === undefined) {
-          delete cleaned[key];
+        if (cleaned[key as keyof T] === undefined) {
+          delete cleaned[key as keyof T];
         }
       });
       return cleaned;
