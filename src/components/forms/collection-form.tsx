@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Search, Plus, X, Palette } from 'lucide-react';
 import { getAllArticlesAction } from '@/lib/actions/articles';
 import type { CollectionFormData } from '@/types/collections';
+import type { Article } from '@/features/articles'; 
 
 interface CollectionFormProps {
   initialData?: Partial<CollectionFormData>;
@@ -13,7 +14,7 @@ interface CollectionFormProps {
 export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArticles, setSelectedArticles] = useState<string[]>(initialData?.articles || []);
-  const [availableArticles, setAvailableArticles] = useState<any[]>([]);
+  const [availableArticles, setAvailableArticles] = useState<Article[]>([]); 
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
     slug: initialData?.slug || '',
@@ -23,7 +24,6 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
     featured: initialData?.featured || false
   });
 
-  // Поиск статей для добавления в коллекцию
   const searchArticles = async (query: string) => {
     const articles = await getAllArticlesAction();
     const filtered = articles.filter(article =>
