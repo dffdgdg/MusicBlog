@@ -66,7 +66,7 @@ export async function createCollectionAction(collectionData: CollectionFormData)
     
     const collectionWithMetadata = {
       ...collectionData,
-      order: Date.now(), // временный порядок
+      order: Date.now(), 
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
