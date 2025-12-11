@@ -3,7 +3,23 @@
 import { useState, useEffect } from 'react';
 import { Search, Plus, X, Palette } from 'lucide-react';
 import type { CollectionFormData } from '@/types/collections';
-import type { Article } from '@/features/articles';
+
+// Интерфейс для статьи из API
+interface ApiArticle {
+  id?: string;
+  slug: string;
+  title: string;
+  category: string;
+  description?: string;
+}
+
+// Интерфейс для коллекции из API
+interface ApiCollection {
+  id: string;
+  title: string;
+  description: string;
+  articles: string[];
+}
 
 interface CollectionFormProps {
   initialData?: Partial<CollectionFormData>;
@@ -13,7 +29,7 @@ interface CollectionFormProps {
 export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArticles, setSelectedArticles] = useState<string[]>(initialData?.articles || []);
-  const [availableArticles, setAvailableArticles] = useState<Article[]>([]);
+  const [availableArticles, setAvailableArticles] = useState<ApiArticle[]>([]);
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
     slug: initialData?.slug || '',
@@ -29,16 +45,16 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
     try {
       const response = await fetch('/api/articles?select=true');
       if (response.ok) {
-        const articles = await response.json();
+        const articles: ApiArticle[] = await response.json();
         setAvailableArticles(articles);
       } else {
         // Запасной вариант: мок-данные для тестирования
-        const mockArticles = [
+        const mockArticles: ApiArticle[] = [
           { slug: 'article-1', title: 'Основы сведения', category: 'Сведение' },
           { slug: 'article-2', title: 'Мастеринг для начинающих', category: 'Мастеринг' },
           { slug: 'article-3', title: 'Синтез звука', category: 'Синтез' }
         ];
-        setAvailableArticles(mockArticles as any);
+        setAvailableArticles(mockArticles);
       }
     } catch (error) {
       console.error('Error loading articles:', error);
@@ -56,11 +72,11 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
   );
 
   // Генерация slug из заголовка
-  const generateSlug = (text: string) => {
+  const generateSlug = (text: string): string => {
     return text
       .toLowerCase()
       .replace(/[а-яё]/g, (char) => {
-        const mapping: { [key: string]: string } = {
+        const mapping: Record<string, string> = {
           'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
           'е': 'e', 'ё': 'e', 'ж': 'zh', 'з': 'z', 'и': 'i',
           'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
@@ -83,7 +99,7 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
     // Если slug пустой, генерируем из заголовка
     const finalSlug = formData.slug || generateSlug(formData.title);
     
-    const submitData = {
+    const submitData: CollectionFormData = {
       ...formData,
       slug: finalSlug,
       articles: selectedArticles
@@ -104,7 +120,7 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
           <input
             type="text"
             value={formData.title}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setFormData({...formData, title: e.target.value});
               // Автоматически генерируем slug если он пустой
               if (!formData.slug) {
@@ -124,7 +140,7 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
           <input
             type="text"
             value={formData.slug}
-            onChange={(e) => setFormData({...formData, slug: e.target.value})}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, slug: e.target.value})}
             className="w-full px-4 py-3 bg-white/5 border-2 border-orange-500/20 rounded-2xl text-white focus:outline-none focus:border-orange-500/50 transition-all duration-300"
             placeholder="osnovy-ableton-live"
             required
@@ -140,7 +156,7 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
           </label>
           <textarea
             value={formData.description}
-            onChange={(e) => setFormData({...formData, description: e.target.value})}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({...formData, description: e.target.value})}
             className="w-full px-4 py-3 bg-white/5 border-2 border-orange-500/20 rounded-2xl text-white focus:outline-none focus:border-orange-500/50 transition-all duration-300"
             rows={3}
             placeholder="Опишите, какие статьи входят в эту коллекцию..."
@@ -176,7 +192,7 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
           <input
             type="text"
             value={formData.tags.join(', ')}
-            onChange={(e) => setFormData({...formData, tags: e.target.value.split(',').map(tag => tag.trim()).filter(Boolean)})}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, tags: e.target.value.split(',').map(tag => tag.trim()).filter(Boolean)})}
             className="w-full px-4 py-3 bg-white/5 border-2 border-orange-500/20 rounded-2xl text-white focus:outline-none focus:border-orange-500/50 transition-all duration-300"
             placeholder="ableton, сведение, новичкам"
           />
@@ -191,7 +207,7 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
             type="text"
             placeholder="Поиск статей для добавления в коллекцию..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
             className="flex-1 px-4 py-2 bg-white/5 border border-orange-500/20 rounded-xl text-white focus:outline-none focus:border-orange-500/50 transition-all duration-300"
           />
         </div>
@@ -259,7 +275,7 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
           type="checkbox"
           id="featured"
           checked={formData.featured}
-          onChange={(e) => setFormData({...formData, featured: e.target.checked})}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, featured: e.target.checked})}
           className="w-4 h-4 text-orange-500 bg-gray-700 border-gray-600 rounded focus:ring-orange-500 focus:ring-2"
         />
         <label htmlFor="featured" className="text-sm font-semibold text-white">
