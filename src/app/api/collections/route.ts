@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const selectOnly = searchParams.get('select') === 'true';
     
-    let query = adminDb.collection('collections').orderBy('title');
+    const query = adminDb.collection('collections').orderBy('title');
     
     if (selectOnly) {
       // Для выпадающего списка возвращаем только нужные поля
