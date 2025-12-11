@@ -1,24 +1,24 @@
-"use client"; 
+"use client";
 
 import Link from 'next/link';
-import { Youtube, Send, Mail, Music, Headphones, Mic2 } from 'lucide-react';
+import { Send, Mail, Music, Headphones, Mic2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
-export default function Footer() 
-{
+export default function Footer() {
     const [currentYear, setCurrentYear] = useState('');
 
     useEffect(() => {
         setCurrentYear(new Date().getFullYear().toString());
-    }, []); 
+    }, []);
 
     return (
         <footer className="bg-gradient-to-t from-gray-900 to-black border-t border-orange-500/20">
             <div className="container mx-auto px-6 lg:px-12 xl:px-20 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8">
+                {/* Основные 3 колонки */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
                   
-                    {/* 1. Блок с брендом и описанием */}
-                    <div className="lg:col-span-4">
+                    {/* Колонка 1: Бренд и описание */}
+                    <div className="space-y-4">
                         <Link href="/" className="inline-block">
                             <h2 className="text-3xl font-black tracking-tight">
                                 <span className="bg-gradient-to-r from-orange-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
@@ -26,38 +26,15 @@ export default function Footer()
                                 </span>
                             </h2>
                         </Link>
-                        <p className="mt-4 text-slate-400 max-w-md leading-relaxed">
+                        <p className="text-slate-400 leading-relaxed">
                             Бесплатная база знаний для начинающих музыкантов. От идеи до готового трека. 
                             Практичные руководства, понятные объяснения и реальные примеры.
                         </p>
-                        <div className="flex gap-4 mt-6">
-                            <a 
-                                href="#" 
-                                aria-label="YouTube" 
-                                className="p-3 bg-white/5 hover:bg-orange-500/20 border border-orange-500/20 rounded-2xl text-slate-400 hover:text-orange-400 transition-all duration-300 hover:scale-110"
-                            >
-                                <Youtube size={20} />
-                            </a>
-                            <a 
-                                href="#" 
-                                aria-label="Telegram" 
-                                className="p-3 bg-white/5 hover:bg-blue-500/20 border border-blue-500/20 rounded-2xl text-slate-400 hover:text-blue-400 transition-all duration-300 hover:scale-110"
-                                >
-                                <Send size={20} />
-                            </a>
-                            <a 
-                                href="#" 
-                                aria-label="Email" 
-                                className="p-3 bg-white/5 hover:bg-cyan-500/20 border border-cyan-500/20 rounded-2xl text-slate-400 hover:text-cyan-400 transition-all duration-300 hover:scale-110"
-                            >
-                                <Mail size={20} />
-                            </a>
-                        </div>
                     </div>
 
-                    {/* 2. Навигационные колонки */}
-                    <div className="lg:col-span-2">
-                        <h3 className="font-bold text-white text-lg mb-4 flex items-center gap-2">
+                    {/* Колонка 2: Навигация */}
+                    <div className="space-y-4">
+                        <h3 className="font-bold text-white text-lg flex items-center gap-2">
                             <Music className="w-5 h-5 text-orange-400" />
                             Навигация
                         </h3>
@@ -82,43 +59,21 @@ export default function Footer()
                                     <span className="group-hover:text-green-400 transition-colors">Видео</span>
                                 </Link>
                             </li>
+                            <li>
+                                <Link href="/contact" className="footer-link group">
+                                    <span className="group-hover:text-orange-400 transition-colors">Контакты</span>
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 
-                    <div className="lg:col-span-3">
-                        <h3 className="font-bold text-white text-lg mb-4 flex items-center gap-2">
-                            <Headphones className="w-5 h-5 text-purple-400" />
-                            Категории
-                        </h3>
-                        <div className="grid grid-cols-2 gap-2">
-                            <Link href="#" className="footer-link group">
-                                <span className="group-hover:text-orange-400 transition-colors">Сведение</span>
-                            </Link>
-                            <Link href="#" className="footer-link group">
-                                <span className="group-hover:text-purple-400 transition-colors">Сонграйтинг</span>
-                            </Link>
-                            <Link href="#" className="footer-link group">
-                                <span className="group-hover:text-cyan-400 transition-colors">Саунд-дизайн</span>
-                            </Link>
-                            <Link href="#" className="footer-link group">
-                                <span className="group-hover:text-green-400 transition-colors">Мастеринг</span>
-                            </Link>
-                            <Link href="#" className="footer-link group">
-                                <span className="group-hover:text-yellow-400 transition-colors">Аранжировка</span>
-                            </Link>
-                            <Link href="#" className="footer-link group">
-                                <span className="group-hover:text-blue-400 transition-colors">Вокал</span>
-                            </Link>
-                        </div>
-                    </div>
-
-                    {/* 3. Блок подписки */}
-                    <div className="lg:col-span-3">
-                        <h3 className="font-bold text-white text-lg mb-4 flex items-center gap-2">
+                    {/* Колонка 3: Подписка */}
+                    <div className="space-y-4">
+                        <h3 className="font-bold text-white text-lg flex items-center gap-2">
                             <Mic2 className="w-5 h-5 text-cyan-400" />
                             Будь в курсе
                         </h3>
-                        <p className="text-slate-400 mb-4 leading-relaxed">
+                        <p className="text-slate-400 leading-relaxed">
                             Получайте лучшие материалы и анонсы новых статей. Без спама, только полезное.
                         </p>
                         <form className="space-y-3">
@@ -136,11 +91,7 @@ export default function Footer()
                                 Подписаться
                             </button>
                         </form>
-                        <p className="text-xs text-slate-500 mt-3">
-                            Подписываясь, вы соглашаетесь с нашей политикой конфиденциальности
-                        </p>
                     </div>
-
                 </div>
 
                 {/* Нижняя строка с копирайтом */}

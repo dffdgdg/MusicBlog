@@ -1,25 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* Базовые стили для светлой темы (если нужно) */
+@media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #171717;
   }
 }
 
@@ -29,28 +19,118 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-@layer components {
-  .input-style {
-    @apply w-full bg-gray-800/80 border border-white/10 rounded-lg py-2 px-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-shadow;
-  }
-  
-  .btn-primary {
-    @apply bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform duration-300 inline-block transform hover:scale-105;
-  }
-
-  .btn-adder {
-    @apply flex flex-col items-center justify-center gap-2 p-4 rounded-xl text-sm font-medium transition-all duration-300 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white hover:border-orange-500/50 border border-transparent;
-  }
-
-  /* Ссылки в боковой панели админки */
-  .admin-nav-link {
-    @apply flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-colors;
-  }
-.footer-link {
-    @apply text-slate-400 hover:text-white transition-colors duration-300 py-1 block;
+/* Кастомизация выпадающих списков */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23fb923c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  background-color: #111827 !important; /* gray-900 */
+  border: 1px solid rgba(249, 115, 22, 0.3); /* orange-500/30 */
+  border-radius: 0.75rem;
+  color: white !important;
 }
-  /* Ссылки в футере (новый класс) */
-  .footer-link {
-    @apply text-gray-400 hover:text-orange-400 transition-colors;
-  }
-} 
+
+/* Стили для option */
+option {
+  background-color: #111827 !important; /* gray-900 */
+  color: white !important;
+  padding: 0.5rem !important;
+}
+
+option:hover,
+option:focus,
+option:active {
+  background-color: rgba(251, 146, 60, 0.3) !important; /* orange-500/30 */
+}
+
+/* Стили для активного/выбранного option */
+option:checked {
+  background-color: rgba(251, 146, 60, 0.5) !important; /* orange-500/50 */
+  color: white !important;
+}
+
+/* Кастомные стили для элементов формы */
+.input-style {
+  width: 100%;
+  background-color: rgba(31, 41, 55, 0.8); /* gray-800/80 */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: white;
+}
+
+.input-style::placeholder {
+  color: rgb(107, 114, 128); /* gray-500 */
+}
+
+.input-style:focus {
+  outline: 2px solid rgb(249, 115, 22); /* orange-500 */
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background-color: rgb(249, 115, 22); /* orange-500 */
+  color: white;
+  font-weight: bold;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  transition: transform 300ms;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background-color: rgb(234, 88, 12); /* orange-600 */
+  transform: scale(1.05);
+}
+
+.btn-adder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 300ms;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgb(209, 213, 219); /* gray-300 */
+  border: 1px solid transparent;
+}
+
+.btn-adder:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: rgba(249, 115, 22, 0.5); /* orange-500/50 */
+}
+
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  color: rgb(209, 213, 219); /* gray-300 */
+}
+
+.admin-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.footer-link {
+  color: rgb(148, 163, 184); /* slate-400 */
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  display: block;
+  transition: color 300ms;
+}
+
+.footer-link:hover {
+  color: white;
+}
