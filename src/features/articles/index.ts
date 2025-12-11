@@ -29,4 +29,5 @@ export interface Article {
     views?: number;
     uniqueViews?: number;
     lastViewed?: string;
+    collections?: string[];
 }
