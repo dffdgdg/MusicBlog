@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Добавить useEffect
 import { Search, Plus, X, Palette } from 'lucide-react';
-import { getAllArticlesAction } from '@/lib/actions/articles';
 import type { CollectionFormData } from '@/types/collections';
 import type { Article } from '@/features/articles'; 
 
@@ -14,7 +13,7 @@ interface CollectionFormProps {
 export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArticles, setSelectedArticles] = useState<string[]>(initialData?.articles || []);
-  const [availableArticles, setAvailableArticles] = useState<Article[]>([]); 
+  const [availableArticles, setAvailableArticles] = useState<Article[]>([]); // Исправить опечатку в названии!
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
     slug: initialData?.slug || '',
@@ -23,6 +22,35 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
     tags: initialData?.tags || [],
     featured: initialData?.featured || false
   });
+
+  useEffect(() => {
+    const loadArticles = async () => {
+      try {
+        const response = await fetch('/api/articles?select=true');
+        const articles = await response.json();
+        setAvailableArticles(articles);
+      } catch (error) {
+        console.error('Error loading articles:', error);
+        // Временное решение если API не готов
+        const tempArticles = await getAllArticlesAction();
+        setAvailableArticles(tempArticles);
+      }
+    };
+    
+    loadArticles();
+  }, []);
+
+  // Функция для загрузки статей (временная, если нет API)
+  const getAllArticlesAction = async (): Promise<Article[]> => {
+    try {
+      const response = await fetch('/api/articles');
+      if (!response.ok) throw new Error('API не отвечает');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+      return []; 
+    }
+  };
 
   const searchArticles = async (query: string) => {
     const articles = await getAllArticlesAction();

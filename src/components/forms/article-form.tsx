@@ -215,12 +215,33 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
   // Состояния для коллекций
   const [selectedCollections, setSelectedCollections] = useState<string[]>(initialData?.collections || []);
   const [collectionSearch, setCollectionSearch] = useState('');
-  const [availableCollections, setAvailableCollections] = useState<Array<{
-    id: string;
-    title: string;
-    description?: string;
-    articles?: string[];
-  }>>([]);
+const [availableCollections, setAvailableCollections] = useState<Array<{
+  id: string;
+  title: string;
+  description?: string;
+  articles?: string[];
+}>>([]);
+
+useEffect(() => {
+  const loadCollections = async () => {
+    try {
+      const response = await fetch('/api/collections?select=true');
+      const collections = await response.json();
+      
+      if (collections) {
+        if (initialData?.collections) {
+          setSelectedCollections(initialData.collections);
+        }
+        
+        setAvailableCollections(collections);
+      }
+    } catch (error) {
+      console.error('Error loading collections:', error);
+    }
+  };
+  
+  loadCollections();
+}, [initialData]);
   const [isCreateCollectionOpen, setIsCreateCollectionOpen] = useState(false);
 
   const isEditing = !!initialData;

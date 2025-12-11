@@ -21,6 +21,25 @@ export async function getAllCollectionsAction(): Promise<Collection[]> {
   }
 }
 
+export async function getCollectionsForSelectAction() {
+  try {
+    const collectionsSnapshot = await adminDb
+      .collection('collections')
+      .orderBy('title')
+      .get();
+    
+    return collectionsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      title: doc.data().title,
+      description: doc.data().description || '',
+      articles: doc.data().articles || []
+    }));
+  } catch (error) {
+    console.error('Error fetching collections for select:', error);
+    return [];
+  }
+}
+
 export async function getCollectionBySlugAction(slug: string): Promise<Collection | null> {
   try {
     const collectionSnapshot = await adminDb
