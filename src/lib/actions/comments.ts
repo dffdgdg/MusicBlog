@@ -66,9 +66,18 @@ export async function createCommentAction(articleSlug: string, formData: Comment
       comment.parentId = formData.parentId;
     }
 
-    await adminDb.collection('comments').doc(commentId).set(comment, {
-      ignoreUndefinedProperties: true
-    });
+    const cleanedComment = removeUndefinedFields(comment);
+    await adminDb.collection('comments').doc(commentId).set(cleanedComment);
+
+    function removeUndefinedFields<T extends Record<string, unknown>>(obj: T): T {
+      const cleaned = { ...obj };
+      Object.keys(cleaned).forEach(key => {
+        if (cleaned[key] === undefined) {
+          delete cleaned[key];
+        }
+      });
+      return cleaned;
+    }
 
     await updateArticleCommentStats(articleSlug);
     revalidatePath(`/articles/${articleSlug}`);
