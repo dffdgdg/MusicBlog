@@ -1,5 +1,5 @@
 // src/features/author/components/StatsGrid.tsx
-import { Eye, FileText, Edit, TrendingUp } from 'lucide-react';
+import { Eye, FileText, Edit } from 'lucide-react';
 
 interface AuthorStats {
   totalArticles: number;

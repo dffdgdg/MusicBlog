@@ -7,8 +7,8 @@ export async function debugFirebase() {
     console.log('🔍 Firebase Debug Information:');
     
     // Проверка подключения
-    const testDoc = await adminDb.collection('_test').doc('connection').get();
-    console.log('✅ Firebase connection: OK');
+    await adminDb.collection('_test').doc('connection').get();
+    console.log('? Firebase connection: OK');
     
     // Проверка коллекции articles
     const articlesSnapshot = await adminDb.collection('articles').limit(1).get();

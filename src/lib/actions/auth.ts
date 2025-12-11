@@ -127,7 +127,7 @@ export async function logoutUserAction() {
     cookieStore.delete('user');
     
     return { success: true, message: 'Выход выполнен' };
-  } catch (error) {
+  } catch {
     return { success: false, message: 'Ошибка при выходе' };
   }
 }

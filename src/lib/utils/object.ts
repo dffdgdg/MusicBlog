@@ -1,4 +1,5 @@
-export function removeUndefinedFields<T extends Record<string, any>>(obj: T): T {
+// ИСПРАВЛЕННАЯ ВЕРСИЯ
+export function removeUndefinedFields<T extends Record<string, unknown>>(obj: T): T {
   const cleaned = { ...obj };
   
   Object.keys(cleaned).forEach(key => {
@@ -16,17 +17,17 @@ export function deepRemoveUndefined<T>(obj: T): T {
   }
   
   if (Array.isArray(obj)) {
-    return obj.map(deepRemoveUndefined) as any;
+    return obj.map(deepRemoveUndefined) as T;
   }
   
-  const cleaned = {} as T;
+  const cleaned: Record<string, unknown> = {};
   
-  Object.keys(obj as any).forEach(key => {
-    const value = (obj as any)[key];
+  Object.keys(obj as Record<string, unknown>).forEach(key => {
+    const value = (obj as Record<string, unknown>)[key];
     if (value !== undefined) {
-      (cleaned as any)[key] = deepRemoveUndefined(value);
+      cleaned[key] = deepRemoveUndefined(value);
     }
   });
   
-  return cleaned;
+  return cleaned as T;
 }

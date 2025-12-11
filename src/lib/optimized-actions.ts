@@ -67,5 +67,5 @@ function getLevelIndex(level: string): number {
 
 async function updateCategoryStats(categoryName: string) {
   const categorySlug = generateSlug(categoryName);
-  console.log('Updating category stats for:', categoryName);
+  console.log('Updating category stats for:', categoryName, 'slug:', categorySlug);
 }
