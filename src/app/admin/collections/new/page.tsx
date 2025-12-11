@@ -3,11 +3,12 @@
 import { CollectionForm } from '@/components/forms/collection-form';
 import { createCollectionAction } from '@/lib/actions/collections';
 import { useRouter } from 'next/navigation';
+import type { CollectionFormData } from '@/types/collections';
 
 export default function NewCollectionPage() {
   const router = useRouter();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: CollectionFormData) => {
     const result = await createCollectionAction(data);
     
     if (result.success) {

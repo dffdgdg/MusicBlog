@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from 'react';
-import { Search, Plus, X, Tag, Palette } from 'lucide-react';
+import { Search, Plus, X, Palette } from 'lucide-react';
 import { getAllArticlesAction } from '@/lib/actions/articles';
+import type { CollectionFormData } from '@/types/collections';
 
 interface CollectionFormProps {
-  initialData?: any;
-  onSubmit: (data: any) => Promise<void>;
+  initialData?: Partial<CollectionFormData>;
+  onSubmit: (data: CollectionFormData) => Promise<void>;
 }
 
 export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
@@ -17,7 +18,7 @@ export function CollectionForm({ initialData, onSubmit }: CollectionFormProps) {
     title: initialData?.title || '',
     slug: initialData?.slug || '',
     description: initialData?.description || '',
-    color: initialData?.color || '#f97316', // orange по умолчанию
+    color: initialData?.color || '#f97316', 
     tags: initialData?.tags || [],
     featured: initialData?.featured || false
   });
