@@ -1,8 +1,10 @@
+// src/lib/actions/auth.ts
 "use server";
 
 import { adminDb } from '@/lib/firebase-admin';
 import { cookies } from 'next/headers';
 import type { User } from '@/types/auth';
+import { generateAuthToken } from '@/lib/auth';
 
 export interface RegisterData {
   email: string;
@@ -15,6 +17,7 @@ export async function registerUserAction(userData: RegisterData) {
   try {
     const { email, name, password, role = 'reader' } = userData;
 
+    // Проверка существующего пользователя
     const existingUser = await adminDb
       .collection('users')
       .where('email', '==', email)
@@ -45,11 +48,26 @@ export async function registerUserAction(userData: RegisterData) {
       isActive: true
     };
 
+    // Сохраняем пользователя в Firestore
     await adminDb.collection('users').doc(userId).set(userRecord);
 
+    // Генерируем JWT токен
+    const authToken = await generateAuthToken(userRecord);
+
+    // Устанавливаем cookies
     const cookieStore = await cookies();
-    cookieStore.set('user', JSON.stringify(userRecord), {
+    
+    // Основной JWT токен (httpOnly для безопасности)
+    cookieStore.set('auth-token', authToken, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7 // 7 дней
+    });
+    
+    // Legacy cookie для обратной совместимости
+    cookieStore.set('user', JSON.stringify(userRecord), {
+      httpOnly: false, // Для клиентского доступа
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7
@@ -58,7 +76,8 @@ export async function registerUserAction(userData: RegisterData) {
     return {
       success: true,
       message: 'Регистрация успешна!',
-      user: userRecord
+      user: userRecord,
+      token: authToken
     };
 
   } catch (error) {
@@ -87,6 +106,7 @@ export async function loginUserAction(email: string, password: string) {
     const userDoc = userSnapshot.docs[0];
     const userData = userDoc.data() as User;
 
+    // Простая проверка пароля (в реальном приложении используйте хеширование!)
     if (!password) {
       return {
         success: false,
@@ -94,13 +114,33 @@ export async function loginUserAction(email: string, password: string) {
       };
     }
 
+    // Обновляем время последнего входа
+    const updatedUser = {
+      ...userData,
+      lastLoginAt: new Date().toISOString()
+    };
+
     await adminDb.collection('users').doc(userDoc.id).update({
       lastLoginAt: new Date().toISOString()
     });
 
+    // Генерируем JWT токен
+    const authToken = await generateAuthToken(updatedUser);
+
+    // Устанавливаем cookies
     const cookieStore = await cookies();
-    cookieStore.set('user', JSON.stringify(userData), {
+    
+    // JWT токен
+    cookieStore.set('auth-token', authToken, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7
+    });
+    
+    // Legacy cookie
+    cookieStore.set('user', JSON.stringify(updatedUser), {
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7
@@ -109,7 +149,8 @@ export async function loginUserAction(email: string, password: string) {
     return {
       success: true,
       message: 'Вход выполнен успешно!',
-      user: userData
+      user: updatedUser,
+      token: authToken
     };
 
   } catch (error) {
@@ -124,10 +165,43 @@ export async function loginUserAction(email: string, password: string) {
 export async function logoutUserAction() {
   try {
     const cookieStore = await cookies();
+    
+    // Удаляем оба типа cookies
+    cookieStore.delete('auth-token');
     cookieStore.delete('user');
     
     return { success: true, message: 'Выход выполнен' };
   } catch {
     return { success: false, message: 'Ошибка при выходе' };
+  }
+}
+
+// Вспомогательная функция для проверки токена
+export async function validateAuthToken(token: string) {
+  try {
+    const { verifyToken } = await import('@/lib/auth');
+    const decoded = await verifyToken(token);
+    
+    if (!decoded) {
+      return { valid: false, user: null };
+    }
+    
+    // Проверяем, существует ли пользователь в базе
+    const userSnapshot = await adminDb
+      .collection('users')
+      .doc(decoded.uid)
+      .get();
+    
+    if (!userSnapshot.exists) {
+      return { valid: false, user: null };
+    }
+    
+    return {
+      valid: true,
+      user: userSnapshot.data() as User
+    };
+  } catch (error) {
+    console.error('Token validation error:', error);
+    return { valid: false, user: null };
   }
 }

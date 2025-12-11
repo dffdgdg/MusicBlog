@@ -1,8 +1,19 @@
 import Link from 'next/link';
 import { LayoutDashboard, PlusCircle, Settings, Users, BarChart3, Home } from 'lucide-react';
+import { getCurrentUser, hasRole } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const user = await getCurrentUser();
+  
+  if (!user) {
+    redirect('/auth');
+  }
+  
+  if (user.role !== 'admin') {
+    redirect('/');
+  }
+    return (
         <div className="pt-15">
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-orange-900/10">
       <div className="fixed inset-0 -z-10 overflow-hidden">

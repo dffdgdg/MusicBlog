@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Mail, Lock, User, LogIn, UserPlus, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';

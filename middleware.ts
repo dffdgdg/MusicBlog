@@ -1,29 +1,49 @@
-// middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifyToken } from '@/lib/auth'; 
 
 export function middleware(request: NextRequest) {
-  // Пропускаем все публичные маршруты
-  if (request.nextUrl.pathname.startsWith('/api') || 
-      request.nextUrl.pathname === '/' ||
-      request.nextUrl.pathname.startsWith('/articles') ||
-      request.nextUrl.pathname.startsWith('/contact') ||
-      request.nextUrl.pathname.startsWith('/privacy') ||
-      request.nextUrl.pathname.startsWith('/terms')) {
+  // Публичные маршруты
+  const publicPaths = [
+    '/', '/api', '/articles', '/contact', 
+    '/privacy', '/terms', '/auth'
+  ];
+  
+  const isPublic = publicPaths.some(path => 
+    request.nextUrl.pathname === path || 
+    request.nextUrl.pathname.startsWith(path)
+  );
+  
+  if (isPublic) {
     return NextResponse.next();
   }
 
-  // Получаем токен из cookies (если используете)
-  const token = request.cookies.get('auth-token');
+  // Проверка токена для защищенных маршрутов
+  const token = request.cookies.get('auth-token')?.value;
   
-  // Для демо-версии пропускаем все запросы
-  // В реальном приложении здесь будет проверка JWT токена
-  return NextResponse.next();
-}
+  if (!token) {
+    return NextResponse.redirect(new URL('/auth', request.url));
+  }
 
-export const config = {
-  matcher: [
-    '/admin/:path*',
-    '/author/:path*'
-  ]
-};
+  try {
+    // Декодируем и проверяем токен
+    const decoded = verifyToken(token);
+    const userRole = decoded.role;
+    
+    // Проверка прав для админ-панели
+    if (request.nextUrl.pathname.startsWith('/admin') && userRole !== 'admin') {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+    
+    // Проверка прав для авторской панели
+    if (request.nextUrl.pathname.startsWith('/author') && 
+        !['author', 'admin'].includes(userRole)) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+    
+    return NextResponse.next();
+  } catch {
+    // Невалидный токен
+    return NextResponse.redirect(new URL('/auth', request.url));
+  }
+}
