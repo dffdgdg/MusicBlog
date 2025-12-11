@@ -1,5 +1,5 @@
 import { getAllCollectionsAction } from '@/lib/actions/collections';
-import { Link } from 'lucide-react';
+import Link from 'next/link';
 
 export default async function CollectionsPage() {
   const collections = await getAllCollectionsAction();
