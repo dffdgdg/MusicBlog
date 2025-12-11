@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebase-admin';
+import { admin, adminDb } from '@/lib/firebase-admin';
 import { revalidatePath } from "next/cache";
 
 export async function POST(request: NextRequest) {
@@ -55,13 +55,16 @@ export async function POST(request: NextRequest) {
         }
 
         const currentViews = articleDoc.data()?.views || 0;
+        const currentStatsViews = articleDoc.data()?.stats?.views || 0;
         const newViews = currentViews + 1;
+        const newStatsViews = currentStatsViews + 1;
 
         console.log(`Updating views for ${slug}: ${currentViews} -> ${newViews}`);
 
         await articleRef.update({
-        views: newViews,
-        lastViewed: new Date().toISOString()
+            views: newViews,
+            'stats.views': newStatsViews,
+            lastViewed: new Date().toISOString()
         });
 
         const revalidatePaths = [

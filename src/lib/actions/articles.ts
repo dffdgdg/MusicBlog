@@ -1,9 +1,8 @@
 "use server";
 
-import { adminDb } from '@/lib/firebase-admin';
+import { admin, adminDb } from '@/lib/firebase-admin';
 import type { Article } from '@/features/articles';
 import { unstable_cache } from 'next/cache';
-
 
 export const getCachedArticles = unstable_cache(
   async () => {
@@ -84,8 +83,11 @@ export async function incrementArticleViews(slug: string) {
         
         if (articleDoc.exists) {
             const currentViews = articleDoc.data()?.views || 0;
+            const currentStatsViews = articleDoc.data()?.stats?.views || 0;
+            
             await articleRef.update({
                 views: currentViews + 1,
+                'stats.views': currentStatsViews + 1,
                 lastViewed: new Date().toISOString()
             });
             

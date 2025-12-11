@@ -1,6 +1,6 @@
 import admin from 'firebase-admin';
+export { admin };
 
-// Проверяем, что переменные окружения установлены
 function getServiceAccount() {
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;

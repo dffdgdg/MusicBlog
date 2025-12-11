@@ -2,8 +2,10 @@ import Link from 'next/link';
 import { LayoutDashboard, PlusCircle, Settings, Users, BarChart3, Home } from 'lucide-react';
 import { getCurrentUser, hasRole } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { getAdminStats } from '@/lib/actions/admin-stats';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const stats = await getAdminStats();
   const user = await getCurrentUser();
   
   if (!user) {
@@ -95,25 +97,25 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                   <span className="font-semibold">Настройки</span>
                 </Link>
               </nav>
-
-              {/* Статистика */}
+              
+              {/* Статистика*/}
               <div className="mt-8 pt-6 border-t border-white/10">
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between text-slate-400">
-                    <span>Статей опубликовано:</span>
-                    <span className="text-white font-semibold">24</span>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between text-slate-400">
+                  <span>Статей опубликовано:</span>
+                  <span className="text-white font-semibold">{stats.publishedArticles}</span>
                   </div>
                   <div className="flex justify-between text-slate-400">
                     <span>Черновиков:</span>
-                    <span className="text-orange-400 font-semibold">3</span>
+                    <span className="text-orange-400 font-semibold">{stats.draftArticles}</span>
                   </div>
                   <div className="flex justify-between text-slate-400">
-                    <span>Посещений сегодня:</span>
-                    <span className="text-green-400 font-semibold">156</span>
+                    <span>Всего просмотров:</span>
+                    <span className="text-green-400 font-semibold">{stats.totalViews}</span>
                   </div>
-                </div>
-              </div>
-            </div>
+                  </div>
+                  </div>
+                  </div>
           </aside>
 
           {/* Основной контент */}

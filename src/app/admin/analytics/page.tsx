@@ -27,13 +27,6 @@ export default function AnalyticsPage() {
       setArticles(allArticles);
       setPopularArticles(popularArticles);
       
-      
-      const totalViews = allArticles.reduce((sum, article) => sum + (article.views || 0), 0);
-      const mostViewed = allArticles.reduce((max, article) => 
-        (article.views || 0) > (max.views || 0) ? article : max, 
-        allArticles[0] || { views: 0, title: '' }
-      );
-      
       setStats({
         totalArticles: realStats.totalArticles,
         totalViews: realStats.totalViews,
