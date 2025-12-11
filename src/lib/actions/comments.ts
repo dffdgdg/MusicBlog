@@ -4,6 +4,7 @@ import { adminDb } from '@/lib/firebase-admin';
 import { getCurrentUser } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import type { Comment, CommentFormData } from '@/types/comments';
+import { deepRemoveUndefined, removeUndefinedFields } from '@/lib/utils/object';
 
 async function updateArticleCommentStats(articleSlug: string) {
   try {
@@ -29,7 +30,6 @@ async function updateArticleCommentStats(articleSlug: string) {
   }
 }
 
-// В src/lib/actions/comments.ts - ОБНОВЛЯЕМ createCommentAction
 export async function createCommentAction(articleSlug: string, formData: CommentFormData) {
   try {
     const user = await getCurrentUser();
@@ -45,6 +45,7 @@ export async function createCommentAction(articleSlug: string, formData: Comment
 
     const commentId = Math.random().toString(36).substr(2, 9);
     
+    // Создаем базовый комментарий без parentId
     const comment: Comment = {
       id: commentId,
       articleSlug,
@@ -62,22 +63,16 @@ export async function createCommentAction(articleSlug: string, formData: Comment
       replies: [],
     };
 
-    if (formData.parentId) {
-      comment.parentId = formData.parentId;
-    }
+    // Добавляем parentId только если он есть
+    const commentWithParentId = {
+      ...comment,
+      ...(formData.parentId && { parentId: formData.parentId })
+    };
 
-    const cleanedComment = removeUndefinedFields(comment);
+    // Используем правильную функцию для очистки
+    const cleanedComment = deepRemoveUndefined(commentWithParentId);
+    
     await adminDb.collection('comments').doc(commentId).set(cleanedComment);
-
-    function removeUndefinedFields<T extends object>(obj: T): T {
-      const cleaned = { ...obj };
-      Object.keys(cleaned).forEach(key => {
-        if (cleaned[key as keyof T] === undefined) {
-          delete cleaned[key as keyof T];
-        }
-      });
-      return cleaned;
-    }
 
     await updateArticleCommentStats(articleSlug);
     revalidatePath(`/articles/${articleSlug}`);
@@ -85,7 +80,7 @@ export async function createCommentAction(articleSlug: string, formData: Comment
     return { 
       success: true, 
       message: "Комментарий опубликован",
-      comment: comment 
+      comment: cleanedComment 
     };
 
   } catch (error) {

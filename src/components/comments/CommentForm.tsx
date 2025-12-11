@@ -31,7 +31,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     isAuthenticated,
     user: user?.name,
     contentLength: content.length,
-    articleSlug
+    articleSlug,
+    parentId
   });
   
   if (!isAuthenticated) {
@@ -53,34 +54,32 @@ const handleSubmit = async (e: React.FormEvent) => {
   setIsSubmitting(true);
   setStatus(null);
 
-  interface OptimisticComment extends Omit<BlogComment, 'id' | 'createdAt'> {
-  id: string;
-  createdAt: string;
-}
-
-const optimisticComment: BlogComment = {
-  id: `optimistic-${Date.now()}`,
-  articleSlug,
-  author: {
-    id: user!.uid,
-    name: user!.name,
-    role: user!.role,
-  },
-  content: content.trim(),
-  createdAt: new Date().toISOString(),
-  likes: 0,
-  isEdited: false,
-  status: 'approved',
-  replies: [],
-  parentId: parentId,
-};
+  // Создаем optimistic comment для мгновенного отображения
+  // Используем uid вместо id, так как это есть в типе User
+  const optimisticComment: BlogComment = {
+    id: `optimistic-${Date.now()}`,
+    articleSlug,
+    author: {
+      id: user!.uid, // ИСПРАВЛЕНО: user.uid вместо user.id
+      name: user!.name,
+      role: user!.role,
+    },
+    content: content.trim(),
+    createdAt: new Date().toISOString(),
+    likes: 0,
+    isEdited: false,
+    status: 'approved',
+    replies: [],
+    ...(parentId && { parentId }),
+  };
 
   try {
     console.log("?? Вызов Server Action...", {
       articleSlug,
       content: content.trim(),
       parentId,
-      user: user?.name
+      user: user?.name,
+      userId: user?.uid // Добавляем uid для отладки
     });
 
     const result = await createCommentAction(articleSlug, {
@@ -94,20 +93,31 @@ const optimisticComment: BlogComment = {
       setContent('');
       setStatus({ message: result.message, isError: false });
       
+      // Передаем optimistic comment в колбэк
       onSuccess?.(optimisticComment);
       
       setTimeout(() => {
         setStatus(null);
-      }, 1000);
+      }, 3000);
     } else {
       setStatus({ message: result.message, isError: true });
+      
+      // Если ошибка, показываем сообщение дольше
+      setTimeout(() => {
+        setStatus(null);
+      }, 5000);
     }
   } catch (error) {
-    console.error("? Ошибка в handleSubmit:", error);
+    console.error("?? Ошибка в handleSubmit:", error);
     setStatus({ 
       message: `Ошибка отправки: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`, 
       isError: true 
     });
+    
+    // При ошибке сети показываем дольше
+    setTimeout(() => {
+      setStatus(null);
+    }, 5000);
   } finally {
     setIsSubmitting(false);
   }
