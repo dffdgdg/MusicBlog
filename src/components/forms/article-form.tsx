@@ -4,9 +4,10 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Article } from '@/features/articles';
 import { createArticleAction, updateArticleAction } from '@/lib/actions';
-import { Eye, Code, Save, Clock, Tag, User, BookOpen, Plus, X, AlertCircle, CheckCircle2, Video, Youtube } from 'lucide-react';
+import { Eye, Code, Save, Clock, Tag, User, BookOpen, Plus, X, AlertCircle, CheckCircle2, Video, Youtube, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MarkdownRenderer from '@/components/shared/ui/MarkdownRenderer';
+
 const CATEGORIES = [
   'Сведение', 'Мастеринг', 'Синтез', 'Саунд-дизайн', 
   'Теория музыки', 'Ableton Live', 'FL Studio', 'Логика',
@@ -204,13 +205,53 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     tags: initialData?.tags || [],
   });
 
+  // Все состояния
   const [newTag, setNewTag] = useState('');
   const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit');
   const [status, setStatus] = useState({ message: '', isError: false });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  
+  // Состояния для коллекций
+  const [selectedCollections, setSelectedCollections] = useState<string[]>(initialData?.collections || []);
+  const [collectionSearch, setCollectionSearch] = useState('');
+  const [availableCollections, setAvailableCollections] = useState<Array<{
+    id: string;
+    title: string;
+    description?: string;
+    articles?: string[];
+  }>>([]);
+  const [isCreateCollectionOpen, setIsCreateCollectionOpen] = useState(false);
 
   const isEditing = !!initialData;
+
+  // Загрузка коллекций при монтировании
+  useEffect(() => {
+    const loadCollections = async () => {
+      try {
+        // Временные мок-данные для тестирования
+        // Позже замените на реальный API
+        const mockCollections = [
+          { id: '1', title: 'Первые шаги в Ableton Live', description: 'Основы работы', articles: [] },
+          { id: '2', title: 'Теория музыки для начинающих', description: 'Базовые знания', articles: [] },
+          { id: '3', title: 'Сведение и мастеринг', description: 'Продвинутые техники', articles: [] },
+          { id: '4', title: 'Саунд-дизайн', description: 'Создание уникальных звуков', articles: [] },
+          { id: '5', title: 'Вокал и обработка', description: 'Работа с голосом', articles: [] },
+        ];
+        
+        // Если статья уже в каких-то коллекциях, отмечаем их
+        if (initialData?.collections) {
+          setSelectedCollections(initialData.collections);
+        }
+        
+        setAvailableCollections(mockCollections);
+      } catch (error) {
+        console.error('Error loading collections:', error);
+      }
+    };
+    
+    loadCollections();
+  }, [initialData]);
 
   const generateSlug = (text: string) => {
     return text
@@ -271,6 +312,21 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
     if (e.key === 'Enter') {
       e.preventDefault();
       addTag();
+    }
+  };
+
+  // Фильтрация коллекций
+  const filteredCollections = availableCollections.filter(collection =>
+    collection.title.toLowerCase().includes(collectionSearch.toLowerCase()) ||
+    (collection.description || '').toLowerCase().includes(collectionSearch.toLowerCase())
+  );
+
+  // Обработчик для коллекций
+  const handleCollectionToggle = (collectionId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedCollections([...selectedCollections, collectionId]);
+    } else {
+      setSelectedCollections(selectedCollections.filter(id => id !== collectionId));
     }
   };
 
@@ -360,7 +416,8 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
         year: 'numeric' 
       }),
       readingTime: Math.ceil(formData.content.split(/\s+/).filter(Boolean).length / 200) || 1,
-      relatedArticles: initialData?.relatedArticles || []
+      relatedArticles: initialData?.relatedArticles || [],
+      collections: selectedCollections,
     };
 
     try {
@@ -524,68 +581,129 @@ export default function ArticleForm({ initialData }: { initialData?: Article }) 
                 </select>
               </div>
             </div>
-            {/* Теги - КОМПАКТНЫЙ ВАРИАНТ */}
-<div className="bg-white/5 rounded-2xl border border-orange-500/20 p-6">
-  <label className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
-    <Tag size={16} />
-    Теги
-    <span className="text-xs text-gray-400 ml-auto">
-      {formData.tags.length}/{MAX_TAGS}
-    </span>
-  </label>
-  
-  {/* Компактное поле ввода */}
-  <div className="flex items-center gap-2 mb-4">
-     <input
-        type="text"
-        value={newTag}
-        onChange={(e) => setNewTag(e.target.value)}
-        onKeyPress={handleTagKeyPress}
-        placeholder="Введите тег и нажмите Enter..."
-        className="w-full px-3 py-2 bg-black/20 border border-orange-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-colors text-sm"
-        disabled={formData.tags.length >= MAX_TAGS}
-      />
-    <button
-      type="button"
-      onClick={addTag}
-      disabled={!newTag.trim() || formData.tags.length >= MAX_TAGS}
-      className="p-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-lg hover:bg-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
-      title="Добавить тег"
-    >
-      <Plus size={16} />
-    </button>
-  </div>
+            
+            {/* Теги */}
+            <div className="bg-white/5 rounded-2xl border border-orange-500/20 p-6">
+              <label className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                <Tag size={16} />
+                Теги
+                <span className="text-xs text-gray-400 ml-auto">
+                  {formData.tags.length}/{MAX_TAGS}
+                </span>
+              </label>
+              
+              <div className="flex items-center gap-2 mb-4">
+                <input
+                  type="text"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyPress={handleTagKeyPress}
+                  placeholder="Введите тег и нажмите Enter..."
+                  className="w-full px-3 py-2 bg-black/20 border border-orange-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 transition-colors text-sm"
+                  disabled={formData.tags.length >= MAX_TAGS}
+                />
+                <button
+                  type="button"
+                  onClick={addTag}
+                  disabled={!newTag.trim() || formData.tags.length >= MAX_TAGS}
+                  className="p-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-lg hover:bg-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                  title="Добавить тег"
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
 
-  {/* Список тегов */}
-  <div className="min-h-[40px]">
-    <AnimatePresence mode="popLayout">
-      <div className="flex flex-wrap gap-2">
-        {formData.tags.map(tag => (
-          <motion.span
-            key={tag}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            className="inline-flex items-center gap-1 px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm border border-orange-500/30 hover:border-orange-500/50 transition-colors"
-          >
-            {tag}
-            <button
-              type="button"
-              onClick={() => removeTag(tag)}
-              className="hover:text-orange-300 transition-colors text-xs ml-1"
-            >
-              <X size={14} />
-            </button>
-          </motion.span>
-        ))}
-        
-        {formData.tags.length === 0 && (
-          <span className="text-gray-500 text-sm">Тегов пока нет</span>
-        )}
-      </div>
-    </AnimatePresence>
-  </div>
-</div>
+              <div className="min-h-[40px]">
+                <AnimatePresence mode="popLayout">
+                  <div className="flex flex-wrap gap-2">
+                    {formData.tags.map(tag => (
+                      <motion.span
+                        key={tag}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm border border-orange-500/30 hover:border-orange-500/50 transition-colors"
+                      >
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(tag)}
+                          className="hover:text-orange-300 transition-colors text-xs ml-1"
+                        >
+                          <X size={14} />
+                        </button>
+                      </motion.span>
+                    ))}
+                    
+                    {formData.tags.length === 0 && (
+                      <span className="text-gray-500 text-sm">Тегов пока нет</span>
+                    )}
+                  </div>
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Коллекции */}
+            <div className="bg-white/5 rounded-2xl border border-purple-500/20 p-6">
+              <label className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                <Tag className="w-4 h-4 text-purple-400" />
+                Коллекции
+                <span className="text-xs text-gray-400 ml-auto">
+                  {selectedCollections.length} выбрано
+                </span>
+              </label>
+              
+              <div className="relative mb-4">
+                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Поиск коллекций..."
+                  value={collectionSearch}
+                  onChange={(e) => setCollectionSearch(e.target.value)}
+                  className="w-full pl-7 pr-2 py-1.5 bg-black/30 border border-orange-500/30 rounded text-white text-xs placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
+                />
+              </div>
+              
+              <div className="space-y-1.5 max-h-32 overflow-y-auto">
+                {filteredCollections.map(collection => (
+                  <label 
+                    key={collection.id}
+                    className="flex items-center gap-2 p-1.5 hover:bg-white/5 rounded text-xs group cursor-pointer transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedCollections.includes(collection.id)}
+                      onChange={(e) => handleCollectionToggle(collection.id, e.target.checked)}
+                      className="w-2.5 h-2.5 text-purple-500 bg-gray-800 rounded border-gray-600 focus:ring-purple-500 focus:ring-1 cursor-pointer"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-slate-200 truncate group-hover:text-white transition-colors">
+                        {collection.title}
+                      </div>
+                      {collection.description && (
+                        <div className="text-slate-500 text-[10px] truncate">
+                          {collection.description}
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                ))}
+                
+                {filteredCollections.length === 0 && (
+                  <div className="text-center py-2">
+                    <div className="text-slate-500 text-xs">Коллекции не найдены</div>
+                  </div>
+                )}
+              </div>
+              
+              <button
+                type="button"
+                onClick={() => setIsCreateCollectionOpen(true)}
+                className="w-full mt-3 text-center text-xs text-purple-400 hover:text-purple-300 py-1.5 border border-purple-500/30 rounded hover:bg-purple-500/10 transition-colors"
+              >
+                + Новая коллекция
+              </button>
+            </div>
 
             {/* Статистика */}
             <div className="bg-white/5 rounded-2xl border border-orange-500/20 p-6">

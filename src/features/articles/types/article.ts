@@ -28,6 +28,7 @@ export interface Article {
   views?: number;
   createdAt?: string;
   updatedAt?: string;
+  collections?: string[];
 }
 
 export interface ArticleFormData {
