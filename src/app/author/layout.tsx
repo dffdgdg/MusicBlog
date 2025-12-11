@@ -1,29 +1,13 @@
-// src/app/layout.tsx
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import ScrollToTop from "@/components/layout/ScrollToTop";
-import { getAllArticlesAction } from "@/lib/actions/articles";
-import { ErrorBoundary } from '@/components/shared/ui/ErrorBoundary';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "СоздайМузыку",
-  description: "Ваша интерактивная студия знаний о создании музыки",
-};
-
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const allArticlesForSearch = await getAllArticlesAction();
-
+export default function AuthorLayout({ children }: { children: React.ReactNode }) {
   return (
-              <ErrorBoundary>
-            {/* Header теперь клиентский компонент */}
-            <Header articles={allArticlesForSearch} />
-            <main className="flex-grow">
-              {children}
-            </main>
-          </ErrorBoundary>
+    <ProtectedRoute requiredRole="author">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-orange-900/10">
+        <div className="container mx-auto px-6 py-8">
+          {children}
+        </div>
+      </div>
+    </ProtectedRoute>
   );
 }

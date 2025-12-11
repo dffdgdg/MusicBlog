@@ -1,8 +1,11 @@
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { getAllArticlesAction } from '@/lib/actions/articles';
 import { getAuthorStats } from '@/lib/actions/author';
-import { FileText, Eye, Edit, BarChart3 } from 'lucide-react'; // ДОБАВИТЬ импорт
+import { FileText } from 'lucide-react'; 
+
 
 async function AuthorAnalyticsPage() {
+  const articles = await getAllArticlesAction();
   const stats = await getAuthorStats();
 
   return (

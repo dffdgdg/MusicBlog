@@ -26,8 +26,7 @@ export async function middleware(request: NextRequest) { // Добавлен asy
   }
 
   try {
-    // Декодируем и проверяем токен - исправлено: добавлен await
-    const decoded = await verifyToken(token); 
+    const decoded =  await verifyToken(token); 
     
     if (!decoded) {
       // Невалидный токен

@@ -2,7 +2,6 @@ import { getCollectionBySlugAction } from '@/lib/actions/collections';
 import { getAllArticlesAction } from '@/lib/actions/articles';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, BookOpen, Tag, Clock, Users } from 'lucide-react';
 
 export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
