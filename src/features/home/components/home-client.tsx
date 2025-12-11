@@ -23,7 +23,6 @@ const topicCollections = [
     }
 ];
 
-// ID ролика из Rutube
 const introVideoId = "76ae2d198cbf010c185243a4123bbc81";
 
 export default function HomePageClient({ latestArticles }: { latestArticles: Article[] }) {
@@ -319,94 +318,7 @@ export default function HomePageClient({ latestArticles }: { latestArticles: Art
                     </motion.div>
                 </motion.div>
             </section>
-
-            {/* VIDEO SECTION */}
-            <section
-                id="video"
-                className="container mx-auto px-6 lg:px-12 xl:px-20 py-28 relative"
-            >
-                <motion.div
-                    variants={fadeUp}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
-                    className="text-center mb-20"
-                >
-                    <motion.h2 
-                        className="text-4xl md:text-6xl font-black mb-6"
-                        whileInView={{ opacity: 1, y: 0 }}
-                        initial={{ opacity: 0, y: 30 }}
-                    >
-                        <span className="bg-gradient-to-r from-orange-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                            Приветствие от автора
-                        </span>
-                    </motion.h2>
-                    <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-                        Узнайте о философии проекта и как извлечь максимум пользы из материалов
-                    </p>
-                </motion.div>
-
-                <motion.div
-                    variants={fadeUp}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.3 }}
-                    transition={{ delay: 0.2 }}
-                    className="max-w-6xl mx-auto relative group"
-                >
-                    <div className="relative rounded-3xl overflow-hidden border-2 border-orange-500/30 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl shadow-2xl">
-                        {/* Hover эффекты */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/0 via-orange-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
-                        
-                        {/* Превью */}
-                        <AnimatePresence>
-                            {!videoStarted && (
-                                <motion.div
-                                    initial={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.5 }}
-                                    onClick={handleVideoPreviewClick}
-                                    className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-black/60 to-black/40 cursor-pointer z-10 transition-all duration-500 group-hover:bg-black/30"
-                                >
-                                    <motion.div
-                                        whileHover={{ scale: 1.1 }}
-                                        className="w-24 h-24 bg-gradient-to-br from-orange-500 to-purple-500 rounded-full flex items-center justify-center mb-6 shadow-2xl"
-                                    >
-                                        <svg
-                                            className="w-12 h-12 text-white"
-                                            fill="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path d="M8 5v14l11-7z" />
-                                        </svg>
-                                    </motion.div>
-                                    <motion.p
-                                        initial={{ opacity: 0.8 }}
-                                        whileHover={{ opacity: 1 }}
-                                        className="text-white font-bold text-xl"
-                                    >
-                                        Смотреть приветствие
-                                    </motion.p>
-                                    <p className="text-orange-300 mt-2 text-sm">
-                                        Длительность: 2 минуты
-                                    </p>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        <iframe
-                            ref={iframeRef}
-                            src={`https://rutube.ru/play/embed/${introVideoId}${videoStarted ? "?autoplay=1" : ""}`}
-                            className="w-full aspect-video transition-all duration-700 group-hover:scale-[1.01]"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            title="Вступительное видео от автора"
-                            onLoad={handleVideoStart}
-                        />
-                    </div>
-                </motion.div>
-            </section>
-
+            
             {/* COLLECTIONS SECTION */}
             <section
                 id="collections"
