@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import type { Article } from "@/features/articles";
 
@@ -38,7 +38,6 @@ export default function HomePageClient({ latestArticles }: { latestArticles: Art
     };
     
     const [activeSection, setActiveSection] = useState('hero');
-    const [videoStarted, setVideoStarted] = useState(false);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     
     const sectionsRef = useRef<{ [key: string]: HTMLElement | null }>({});
@@ -118,17 +117,6 @@ export default function HomePageClient({ latestArticles }: { latestArticles: Art
                 behavior: 'smooth'
             });
         }
-    };
-
-    const handleVideoStart = () => {
-        setVideoStarted(true);
-    };
-
-    const handleVideoPreviewClick = () => {
-        setVideoStarted(true);
-        setTimeout(() => {
-            iframeRef.current?.focus();
-        }, 100);
     };
 
     // Анимация появления элементов с задержкой

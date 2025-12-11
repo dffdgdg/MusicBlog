@@ -12,7 +12,7 @@ interface CommentsStore {
   removeOptimisticUpdate: (id: string) => void;
 }
 
-export const useCommentsStore = create<CommentsStore>((set, get) => ({
+export const useCommentsStore = create<CommentsStore>((set) => ({
   comments: [],
   optimisticUpdates: new Map(),
   

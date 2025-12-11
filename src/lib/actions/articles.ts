@@ -1,8 +1,8 @@
 "use server";
 
-import { admin, adminDb } from '@/lib/firebase-admin';
 import type { Article } from '@/features/articles';
 import { unstable_cache } from 'next/cache';
+import { adminDb } from '../firebase-admin';
 
 export const getCachedArticles = unstable_cache(
   async () => {

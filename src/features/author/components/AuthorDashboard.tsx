@@ -1,8 +1,5 @@
-// src/features/author/components/AuthorDashboard.tsx
 "use client";
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { FileText, Plus, BarChart3, Edit, Users } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import Link from 'next/link';
@@ -10,7 +7,6 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 function AuthorDashboardContent() {
   const { user } = useAuthStore();
-  const [activeTab, setActiveTab] = useState('articles');
 
   const stats = {
     totalArticles: 12,

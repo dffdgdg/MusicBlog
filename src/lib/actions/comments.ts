@@ -4,7 +4,7 @@ import { adminDb } from '@/lib/firebase-admin';
 import { getCurrentUser } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import type { Comment, CommentFormData } from '@/types/comments';
-import { deepRemoveUndefined, removeUndefinedFields } from '@/lib/utils/object';
+import { deepRemoveUndefined } from '@/lib/utils/object';
 
 async function updateArticleCommentStats(articleSlug: string) {
   try {
