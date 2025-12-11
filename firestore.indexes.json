@@ -20,6 +20,13 @@
       "collectionGroup": "articles",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "views", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "articles",
+      "queryScope": "COLLECTION",
+      "fields": [
         { "fieldPath": "stats.views", "order": "DESCENDING" }
       ]
     },

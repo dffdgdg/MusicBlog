@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase-admin';
+import { revalidatePath } from "next/cache";
 
 export async function POST(request: NextRequest) {
     try {
@@ -59,9 +60,18 @@ export async function POST(request: NextRequest) {
         console.log(`Updating views for ${slug}: ${currentViews} -> ${newViews}`);
 
         await articleRef.update({
-            views: newViews,
-            lastViewed: new Date().toISOString()
+        views: newViews,
+        lastViewed: new Date().toISOString()
         });
+
+        const revalidatePaths = [
+          `/articles/${slug}`,
+          '/',
+          '/articles',
+          '/admin/analytics'
+        ];
+
+        revalidatePaths.forEach(path => { revalidatePath(path);});
 
         const response = NextResponse.json({ 
             success: true, 

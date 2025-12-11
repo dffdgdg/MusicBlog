@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { getAllArticlesAction, getPopularArticlesAction } from '@/lib/actions/articles';
 import { Eye, TrendingUp, Users, BarChart3 } from 'lucide-react';
-import type { Article } from '@/features/articles'; // Добавляем импорт типа
+import { getRealTimeStats } from '@/lib/actions/stats';
+import type { Article } from '@/features/articles'; 
 
 export default function AnalyticsPage() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -17,13 +18,15 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      const [allArticles, popularArticles] = await Promise.all([
+      const [allArticles, popularArticles, realStats] = await Promise.all([
         getAllArticlesAction(),
-        getPopularArticlesAction(5)
+        getPopularArticlesAction(5),
+        getRealTimeStats() 
       ]);
       
       setArticles(allArticles);
       setPopularArticles(popularArticles);
+      
       
       const totalViews = allArticles.reduce((sum, article) => sum + (article.views || 0), 0);
       const mostViewed = allArticles.reduce((max, article) => 
@@ -32,17 +35,16 @@ export default function AnalyticsPage() {
       );
       
       setStats({
-        totalArticles: allArticles.length,
-        totalViews,
-        averageViews: Math.round(totalViews / allArticles.length) || 0,
-        mostViewedArticle: {
-          title: mostViewed.title,
-          views: mostViewed.views || 0
-        }
+        totalArticles: realStats.totalArticles,
+        totalViews: realStats.totalViews,
+        averageViews: Math.round(realStats.totalViews / realStats.totalArticles) || 0,
+        mostViewedArticle: realStats.mostViewedArticle
       });
     };
     
     loadData();
+    const interval = setInterval(loadData, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   return (

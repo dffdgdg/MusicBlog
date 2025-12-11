@@ -31,13 +31,12 @@ export async function getCurrentUser() {
           email: decoded.email,
           name: decoded.name,
           role: decoded.role as 'admin' | 'author' | 'reader',
-          createdAt: new Date().toISOString(), // Можно добавить в payload
+          createdAt: new Date().toISOString(), 
           lastLoginAt: new Date().toISOString(),
           isActive: true
         };
       } catch (jwtError) {
         console.log('JWT token invalid:', jwtError);
-        // Продолжаем проверку legacy cookie
       }
     }
     
@@ -57,8 +56,9 @@ export async function getCurrentUser() {
       return null;
     }
     
-    return {
-      id: userData.uid || userData.id || `user-${Date.now()}`,
+     return {
+      id: userData.uid || userData.id || `user-${Date.now()}`, 
+      uid: userData.uid || userData.id || `user-${Date.now()}`,
       email: userData.email || '',
       name: userData.name || 'Пользователь',
       role: (userData.role || 'reader') as 'admin' | 'author' | 'reader',

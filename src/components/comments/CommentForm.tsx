@@ -58,11 +58,11 @@ const handleSubmit = async (e: React.FormEvent) => {
   createdAt: string;
 }
 
-const optimisticComment: OptimisticComment = {
+const optimisticComment: BlogComment = {
   id: `optimistic-${Date.now()}`,
   articleSlug,
   author: {
-    id: user!.uid, 
+    id: user!.uid,
     name: user!.name,
     role: user!.role,
   },
@@ -72,8 +72,7 @@ const optimisticComment: OptimisticComment = {
   isEdited: false,
   status: 'approved',
   replies: [],
-  parentId: parentId, 
-  updatedAt: undefined,
+  parentId: parentId,
 };
 
   try {

@@ -45,11 +45,10 @@ export function ViewTracker({ slug }: ViewTrackerProps) {
             }
         };
 
-        // Добавляем небольшую задержку для уверенности, что страница загрузилась
         const timer = setTimeout(trackView, 100);
         
         return () => clearTimeout(timer);
     }, [slug]);
 
-    return null; // Этот компонент не рендерит ничего видимого
+    return null; 
 }
