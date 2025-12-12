@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Clock, BookOpen } from 'lucide-react';
 
-export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function CollectionPage({ params }: { params: { slug: string } }) {
+  const { slug } = params;
   const collection = await getCollectionBySlugAction(slug);
   
   if (!collection) {
