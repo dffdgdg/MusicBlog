@@ -27,15 +27,12 @@ select {
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
-  background-color: #111827 !important; /* gray-900 */
-  border: 1px solid rgba(249, 115, 22, 0.3); /* orange-500/30 */
   border-radius: 0.75rem;
   color: white !important;
 }
 
 /* Стили для option */
 option {
-  background-color: #111827 !important; /* gray-900 */
   color: white !important;
   padding: 0.5rem !important;
 }
