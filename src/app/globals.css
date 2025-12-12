@@ -33,6 +33,7 @@ select {
 
 /* Стили для option */
 option {
+  background-color: rgba(31, 41, 55, 0.8); /* gray-900 */
   color: white !important;
   padding: 0.5rem !important;
 }
