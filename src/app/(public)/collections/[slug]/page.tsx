@@ -17,7 +17,14 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   );
   
   return (
-    <div className="min-h-screen pt-20">
+    <div className="relative min-h-screen">
+      {/* Общий фон как на главной */}
+      <div className="fixed inset-0 -z-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900/80 to-orange-900/40"></div>
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl animate-pulse"></div>
+      </div>
       <div className="container mx-auto px-6 lg:px-12 xl:px-20 py-12">
         {/* Заголовок коллекции */}
         <div className="text-center mb-12">
