@@ -50,7 +50,7 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/#collections" className="footer-link group">
+                                <Link href="/collections" className="footer-link group">
                                     <span className="group-hover:text-cyan-400 transition-colors">Подборки</span>
                                 </Link>
                             </li>
