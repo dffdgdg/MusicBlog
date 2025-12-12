@@ -182,16 +182,6 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
             }
           </button>
         </div>
-
-        {/* Демо-аккаунты */}
-        <div className="mt-6 p-4 bg-white/5 rounded-2xl border border-orange-500/20">
-          <p className="text-slate-400 text-sm mb-2">Демо-аккаунты (пароль: любой):</p>
-          <div className="space-y-1 text-xs text-slate-300">
-            <div>admin@demo.ru (Админ)</div>
-            <div>author@demo.ru (Автор)</div>
-            <div>user@demo.ru (Читатель)</div>
-          </div>
-        </div>
       </motion.div>
     </div>,
     document.body

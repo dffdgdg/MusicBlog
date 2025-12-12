@@ -3,8 +3,9 @@
 
 import { adminDb } from '@/lib/firebase-admin';
 import { cookies } from 'next/headers';
-import type { User } from '@/types/auth';
+import type { User, UserWithPassword } from '@/types/auth';
 import { generateAuthToken } from '@/lib/auth';
+import { hashPassword, verifyPassword } from '../auth/password';
 
 export interface RegisterData {
   email: string;
@@ -17,57 +18,49 @@ export async function registerUserAction(userData: RegisterData) {
   try {
     const { email, name, password, role = 'reader' } = userData;
 
-    // Проверка существующего пользователя
-    const existingUser = await adminDb
-      .collection('users')
-      .where('email', '==', email)
-      .get();
-
-    if (!existingUser.empty) {
-      return { 
-        success: false, 
-        message: 'Пользователь с таким email уже существует' 
-      };
-    }
-
-    if (password.length < 6) {
+    // Валидация пароля
+    if (password.length < 8) {
       return {
         success: false,
-        message: 'Пароль должен содержать минимум 6 символов'
+        message: 'Пароль должен содержать минимум 8 символов'
       };
     }
 
+    // Хешируем пароль
+    const passwordHash = await hashPassword(password);
+
     const userId = Math.random().toString(36).substr(2, 9);
-    const userRecord: User = {
+    const userRecord: UserWithPassword = {
       uid: userId,
       email,
       name,
+      passwordHash,
       role: role as 'admin' | 'author' | 'reader',
       createdAt: new Date().toISOString(),
       lastLoginAt: new Date().toISOString(),
       isActive: true
     };
 
-    // Сохраняем пользователя в Firestore
+    // Сохраняем с хешем пароля
     await adminDb.collection('users').doc(userId).set(userRecord);
 
-    // Генерируем JWT токен
-    const authToken = await generateAuthToken(userRecord);
+    // Создаем пользователя без пароля для ответа
+    const user: User = {
+      uid: userId,
+      email,
+      name,
+      role: role as 'admin' | 'author' | 'reader',
+      createdAt: userRecord.createdAt,
+      lastLoginAt: userRecord.lastLoginAt,
+      isActive: true
+    };
 
-    // Устанавливаем cookies
+    // Генерируем токен и устанавливаем куки
+    const authToken = await generateAuthToken(user);
     const cookieStore = await cookies();
     
-    // Основной JWT токен (httpOnly для безопасности)
     cookieStore.set('auth-token', authToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7 // 7 дней
-    });
-    
-    // Legacy cookie для обратной совместимости
-    cookieStore.set('user', JSON.stringify(userRecord), {
-      httpOnly: false, // Для клиентского доступа
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7
@@ -76,10 +69,9 @@ export async function registerUserAction(userData: RegisterData) {
     return {
       success: true,
       message: 'Регистрация успешна!',
-      user: userRecord,
+      user,
       token: authToken
     };
-
   } catch (error) {
     console.error('Registration error:', error);
     return {
@@ -94,53 +86,51 @@ export async function loginUserAction(email: string, password: string) {
     const userSnapshot = await adminDb
       .collection('users')
       .where('email', '==', email)
+      .limit(1)
       .get();
 
     if (userSnapshot.empty) {
       return {
         success: false,
-        message: 'Пользователь не найден'
+        message: 'Неверный email или пароль'
       };
     }
 
     const userDoc = userSnapshot.docs[0];
-    const userData = userDoc.data() as User;
+    const userData = userDoc.data() as UserWithPassword;
 
-    // Простая проверка пароля (в реальном приложении используйте хеширование!)
-    if (!password) {
+    const isValidPassword = await verifyPassword(password, userData.passwordHash);
+    
+    if (!isValidPassword) {
       return {
         success: false,
-        message: 'Неверный пароль'
+        message: 'Неверный email или пароль'
       };
     }
 
-    // Обновляем время последнего входа
-    const updatedUser = {
-      ...userData,
-      lastLoginAt: new Date().toISOString()
+    // Создаем пользователя без пароля для клиента
+    const user: User = {
+      uid: userDoc.id,
+      email: userData.email,
+      name: userData.name,
+      role: userData.role,
+      avatar: userData.avatar,
+      createdAt: userData.createdAt,
+      lastLoginAt: new Date().toISOString(),
+      isActive: userData.isActive
     };
 
+    // Обновляем время входа
     await adminDb.collection('users').doc(userDoc.id).update({
       lastLoginAt: new Date().toISOString()
     });
 
-    // Генерируем JWT токен
-    const authToken = await generateAuthToken(updatedUser);
-
-    // Устанавливаем cookies
+    // Генерируем токен и устанавливаем куки
+    const authToken = await generateAuthToken(user);
     const cookieStore = await cookies();
     
-    // JWT токен
     cookieStore.set('auth-token', authToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7
-    });
-    
-    // Legacy cookie
-    cookieStore.set('user', JSON.stringify(updatedUser), {
-      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7
@@ -149,10 +139,9 @@ export async function loginUserAction(email: string, password: string) {
     return {
       success: true,
       message: 'Вход выполнен успешно!',
-      user: updatedUser,
+      user,
       token: authToken
     };
-
   } catch (error) {
     console.error('Login error:', error);
     return {

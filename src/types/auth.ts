@@ -9,6 +9,10 @@ export interface User {
   isActive: boolean;
 }
 
+export interface UserWithPassword extends User {
+  passwordHash: string;
+}
+
 export interface AuthState {
   user: User | null;
   isLoading: boolean;
