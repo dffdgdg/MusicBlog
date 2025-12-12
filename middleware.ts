@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyToken } from '@/lib/auth'; 
 
-export async function middleware(request: NextRequest) { // Добавлен async
+export async function middleware(request: NextRequest) {
   // Публичные маршруты
   const publicPaths = [
     '/', '/api', '/articles', '/contact', 
@@ -18,7 +18,6 @@ export async function middleware(request: NextRequest) { // Добавлен asy
     return NextResponse.next();
   }
 
-  // Проверка токена для защищенных маршрутов
   const token = request.cookies.get('auth-token')?.value;
   
   if (!token) {
@@ -26,29 +25,26 @@ export async function middleware(request: NextRequest) { // Добавлен asy
   }
 
   try {
-    const decoded =  await verifyToken(token); 
+    const decoded = await verifyToken(token); 
     
     if (!decoded) {
-      // Невалидный токен
       return NextResponse.redirect(new URL('/auth', request.url));
     }
     
     const userRole = decoded.role;
     
-    // Проверка прав для админ-панели
     if (request.nextUrl.pathname.startsWith('/admin') && userRole !== 'admin') {
       return NextResponse.redirect(new URL('/', request.url));
     }
     
-    // Проверка прав для авторской панели
     if (request.nextUrl.pathname.startsWith('/author') && 
         !['author', 'admin'].includes(userRole)) {
       return NextResponse.redirect(new URL('/', request.url));
     }
     
     return NextResponse.next();
-  } catch {
-    // Невалидный токен
+  } catch (error) {
+    console.error('Error verifying token:', error);
     return NextResponse.redirect(new URL('/auth', request.url));
   }
 }

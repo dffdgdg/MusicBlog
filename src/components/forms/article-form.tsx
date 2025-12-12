@@ -389,6 +389,7 @@ useEffect(() => {
     { label: 'Курсив', syntax: '_', wrap: true },
     { label: 'Код', syntax: '`', wrap: true },
     { label: 'Ссылка', syntax: '[текст](url)', wrap: false },
+    { label: 'Изображение', syntax: '![Alt текст](url)', wrap: false }, 
     { label: 'Список', syntax: '- ', wrap: false },
     { label: 'Цитата', syntax: '> ', wrap: false },
   ];
