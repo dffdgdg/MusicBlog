@@ -1,21 +1,9 @@
-import { getCollectionBySlugAction } from '@/lib/actions/collections';
-import { getAllArticlesAction } from '@/lib/actions/articles';
-import { notFound } from 'next/navigation';
+import { getAllCollectionsAction } from '@/lib/actions/collections';
 import Link from 'next/link';
-import { ArrowLeft, Clock, BookOpen } from 'lucide-react';
+import { BookOpen, ArrowRight, Grid3X3, FolderOpen } from 'lucide-react';
 
-export default async function CollectionPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
-  const collection = await getCollectionBySlugAction(slug);
-  
-  if (!collection) {
-    notFound();
-  }
-  
-  const allArticles = await getAllArticlesAction();
-  const collectionArticles = allArticles.filter(article => 
-    collection.articles.includes(article.slug)
-  );
+export default async function CollectionsListPage() {
+  const collections = await getAllCollectionsAction();
   
   return (
     <div className="relative min-h-screen">
@@ -31,97 +19,92 @@ export default async function CollectionPage({ params }: { params: { slug: strin
         {/* Навигация */}
         <nav className="mb-12">
           <Link 
-            href="/collections"
+            href="/"
             className="inline-flex items-center gap-3 text-slate-300 hover:text-orange-400 transition-colors group font-semibold"
           >
-            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            Назад к подборкам
+            <ArrowRight className="w-5 h-5 rotate-180 group-hover:-translate-x-1 transition-transform" />
+            На главную
           </Link>
         </nav>
 
-        {/* Заголовок коллекции */}
+        {/* Заголовок */}
         <div className="text-center mb-16">
+          <div className="flex justify-center mb-8">
+            <div className="w-20 h-20 bg-gradient-to-br from-purple-500/20 to-orange-500/20 rounded-3xl flex items-center justify-center border-2 border-purple-500/30">
+              <Grid3X3 className="w-10 h-10 text-purple-400" />
+            </div>
+          </div>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8">
-            <span className="bg-gradient-to-r from-orange-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
-              {collection.title}
+            <span className="bg-gradient-to-r from-purple-400 via-orange-400 to-cyan-400 bg-clip-text text-transparent">
+              Подборки
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto leading-relaxed">
-            {collection.description}
+            Тематические коллекции статей для системного изучения
           </p>
         </div>
 
-        {/* Теги коллекции */}
-        {collection.tags.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {collection.tags.map(tag => (
-              <span
-                key={tag}
-                className="px-4 py-2 bg-orange-500/20 text-orange-400 rounded-full text-sm font-semibold border border-orange-500/30 hover:border-orange-500/50 transition-colors"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Статьи коллекции */}
-        {collectionArticles.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">??</div>
-            <h3 className="text-xl font-bold text-slate-300 mb-2">В этой подборке пока нет статей</h3>
-            <p className="text-slate-400 mb-6">Скоро здесь появятся интересные материалы</p>
+        {/* Список коллекций */}
+        {collections.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="text-8xl mb-6">📚</div>
+            <h3 className="text-3xl font-bold text-slate-300 mb-4">Подборок пока нет</h3>
+            <p className="text-slate-400 max-w-md mx-auto text-lg">
+              Скоро здесь появятся тематические коллекции статей
+            </p>
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-white">
-                Статьи в подборке <span className="text-orange-400">({collectionArticles.length})</span>
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {collectionArticles.map(article => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {collections.map(collection => (
                 <Link
-                  key={article.slug}
-                  href={`/articles/${article.slug}`}
+                  key={collection.slug}
+                  href={`/collections/${collection.slug}`}
                   className="group block p-8 rounded-3xl border-2 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border-orange-500/20 hover:border-orange-500/50 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl"
                 >
-                  {/* Категория и время чтения */}
-                  <div className="flex justify-between items-start mb-4">
-                    <span className="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-sm font-semibold border border-cyan-500/30">
-                      {article.category}
-                    </span>
-                    <span className="text-slate-400 text-sm flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {article.readingTime} мин
-                    </span>
+                  {/* Иконка коллекции */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-orange-500 rounded-2xl flex items-center justify-center">
+                      <FolderOpen className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white group-hover:text-orange-400 transition-colors">
+                        {collection.title}
+                      </h3>
+                      <p className="text-slate-400 text-sm">
+                        {collection.articles?.length || 0} статей
+                      </p>
+                    </div>
                   </div>
-
-                  {/* Заголовок */}
-                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-orange-400 transition-colors line-clamp-2">
-                    {article.title}
-                  </h3>
-
+                  
                   {/* Описание */}
-                  <p className="text-slate-300 mb-6 line-clamp-3">
-                    {article.excerpt}
+                  <p className="text-slate-300 mb-6 leading-relaxed line-clamp-3">
+                    {collection.description}
                   </p>
-
-                  {/* Уровень сложности */}
-                  <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/10">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                      article.level === 'Начальный' 
-                        ? 'bg-green-500/20 text-green-400 border-green-500/30'
-                        : article.level === 'Средний'
-                        ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-                        : 'bg-purple-500/20 text-purple-400 border-purple-500/30'
-                    }`}>
-                      {article.level}
+                  
+                  {/* Теги */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {collection.tags?.slice(0, 3).map(tag => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs border border-orange-500/30"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                    {collection.tags?.length > 3 && (
+                      <span className="px-3 py-1 bg-white/10 text-slate-400 rounded-full text-xs">
+                        +{collection.tags.length - 3}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Кнопка */}
+                  <div className="flex items-center justify-between pt-6 border-t border-white/10">
+                    <span className="text-slate-400 text-sm">
+                      Изучить подборку
                     </span>
-                    <span className="text-orange-400 font-semibold text-sm group-hover:translate-x-1 transition-transform">
-                      Читать →
-                    </span>
+                    <ArrowRight className="w-5 h-5 text-orange-400 group-hover:translate-x-2 transition-transform" />
                   </div>
                 </Link>
               ))}
@@ -129,26 +112,19 @@ export default async function CollectionPage({ params }: { params: { slug: strin
           </>
         )}
 
-        {/* Призыв к действию */}
-        {collectionArticles.length > 0 && (
-          <div className="mt-16 text-center">
-            <div className="p-8 rounded-3xl border-2 bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-cyan-500/10 backdrop-blur-xl border-orange-500/30">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Изучили все материалы?
-              </h3>
-              <p className="text-slate-300 mb-6 max-w-md mx-auto">
-                Посмотрите другие подборки статей по созданию музыки
-              </p>
-              <Link
-                href="/collections"
-                className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-purple-500 hover:from-orange-400 hover:to-purple-400 text-white font-bold px-8 py-4 rounded-2xl shadow-2xl hover:shadow-orange-500/40 transition-all duration-300"
-              >
-                <BookOpen className="w-5 h-5" />
-                К другим подборкам
-              </Link>
-            </div>
-          </div>
-        )}
+        {/* Дополнительная информация */}
+        <div className="text-center mt-16 pt-8 border-t border-white/10">
+          <p className="text-slate-400 mb-4">
+            Хотите создать свою подборку или предложить тему?
+          </p>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-semibold transition-colors"
+          >
+            Напишите нам
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     </div>
   );
